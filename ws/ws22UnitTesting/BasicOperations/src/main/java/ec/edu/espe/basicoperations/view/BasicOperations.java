@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 /**
  *
- * @author G400
+ * @author Kerlly Chiriboga - ODS
  */
 public class BasicOperations {
 

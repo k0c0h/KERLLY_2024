@@ -3,7 +3,7 @@ package ec.edu.espe.basicoperations.controller;
 
 /**
  *
- * @author G400
+ * @author Kerlly Chiriboga - ODS
  */
 public class BasicOperation {
          public static float addTwoNumbers(float addend1, float addend2) {

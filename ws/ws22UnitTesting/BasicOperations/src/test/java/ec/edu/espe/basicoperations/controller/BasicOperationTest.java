@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
- * @author G400
+ * @author Kerlly Chiriboga - ODS
  */
 public class BasicOperationTest {
     
