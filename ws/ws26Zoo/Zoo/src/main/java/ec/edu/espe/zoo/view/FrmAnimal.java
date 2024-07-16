@@ -1,4 +1,3 @@
-
 package ec.edu.espe.zoo.view;
 
 import ec.edu.espe.zoo.model.Animal;
@@ -11,7 +10,6 @@ import utils.FileCloud;
  *
  * @author Kerlly Chiriboga, ODS
  */
-
 public class FrmAnimal extends javax.swing.JFrame {
 
     /**
@@ -285,7 +283,7 @@ public class FrmAnimal extends javax.swing.JFrame {
         int numberOfBones;
         boolean isVertebrate;
         ArrayList<String> foods;
-        
+
         id = Integer.parseInt(txtid.getText());
         description = txtDescription.getText();
         date = new Date();
@@ -294,51 +292,59 @@ public class FrmAnimal extends javax.swing.JFrame {
         numberOfBones = sldNumberOfBones.getValue();
         isVertebrate = chkVertebrate.isSelected();
         foods = (ArrayList<String>) lstFood.getSelectedValuesList();
-        
+
         animal = new Animal(id, description, date, gender, cage, numberOfBones, isVertebrate, (ArrayList<String>) foods);
-        
-        JOptionPane.showMessageDialog(this, "id: " + animal.getId()+ "\n" + "Description: " + animal.getDescription()+ "\n" + "Gender: " + animal.getGender() + "\n" + "Number Of Bones: " + animal.getNumberOfBones());
+
+        JOptionPane.showMessageDialog(this, "id: " + animal.getId() + "\n" + "Description: " + animal.getDescription() + "\n" + "Gender: " + animal.getGender() + "\n" + "Number Of Bones: " + animal.getNumberOfBones() + "\n" + "Born On Date: " + animal.getDate());
         JOptionPane.showMessageDialog(this, animal.getCage(), "Animal info", JOptionPane.CANCEL_OPTION);
-        JOptionPane.showMessageDialog(this, "are you sure you want to save animal ---> " + animal.getDescription());
-        
-        FileCloud.saveAnimalToCloud(animal);
-        //POJO play java objects        
+        int option = JOptionPane.showConfirmDialog(this, "Are you sure you want to save the animal ---> " + animal.getDescription(), "Confirm Save", JOptionPane.YES_NO_CANCEL_OPTION);
+
+        if (option == JOptionPane.YES_OPTION) {
+            FileCloud.saveAnimalToCloud(animal);
+            JOptionPane.showMessageDialog(this, "Animal saved to cloud: " + animal.getDescription());
+        } else if (option == JOptionPane.NO_OPTION) {
+            JOptionPane.showMessageDialog(this, "Animal not saved.");
+        } else if (option == JOptionPane.CANCEL_OPTION) {
+            JOptionPane.showMessageDialog(this, "You can continue editing the animal.");
+        }
+
+            //POJO play java objects        
     }//GEN-LAST:event_btmRegisterActionPerformed
 
     /**
-     * @param args the command line arguments
-     */
+         * @param args the command line arguments
+         */
     public static void main(String args[]) {
-    /* Set the Nimbus look and feel */
-    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-     */
-    try {
-        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-            if ("Nimbus".equals(info.getName())) {
-                javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                break;
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
             }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-    } catch (ClassNotFoundException ex) {
-        java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    } catch (InstantiationException ex) {
-        java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    } catch (IllegalAccessException ex) {
-        java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-        java.util.logging.Logger.getLogger(FrmAnimal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    }
-    //</editor-fold>
+        //</editor-fold>
 
-    /* Create and display the form */
-    java.awt.EventQueue.invokeLater(new Runnable() {
-        public void run() {
-            new FrmAnimal().setVisible(true);
-        }
-    });
-}
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new FrmAnimal().setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btmFeed;
