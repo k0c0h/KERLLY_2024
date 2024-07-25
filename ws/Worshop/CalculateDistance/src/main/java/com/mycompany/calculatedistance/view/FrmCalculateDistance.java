@@ -35,6 +35,7 @@ public class FrmCalculateDistance extends javax.swing.JFrame {
         TimeField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         Resulttxt = new javax.swing.JLabel();
+        CalculateBton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -62,6 +63,13 @@ public class FrmCalculateDistance extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI Black", 1, 24)); // NOI18N
         jLabel3.setText("The result is : ");
 
+        CalculateBton.setText("Calculate");
+        CalculateBton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CalculateBtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -78,11 +86,15 @@ public class FrmCalculateDistance extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(Timetxt, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(Speedtxt)
-                                .addComponent(TimeField, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE))
-                            .addComponent(jLabel3)))
+                                .addComponent(TimeField, javax.swing.GroupLayout.DEFAULT_SIZE, 737, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(73, 73, 73)
-                        .addComponent(Resulttxt, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(33, 33, 33)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Resulttxt, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(351, 351, 351)
+                        .addComponent(CalculateBton, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(181, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -98,10 +110,15 @@ public class FrmCalculateDistance extends javax.swing.JFrame {
                 .addComponent(Timetxt, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addComponent(TimeField, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(Resulttxt, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(CalculateBton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(Resulttxt, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addComponent(jLabel3)))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
 
@@ -109,22 +126,35 @@ public class FrmCalculateDistance extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void SpeedtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SpeedtxtActionPerformed
-     String  speed = Speedtxt.getText();
-     
-     try {
 
-         
-          double speed = Double.parseDouble(SpeedText);
-            PhisicalParameters parameters = new PhisicalParameters(speed, 0.0)
-     }
-     
-     PhisicalParameters  parameters = new PhisicalParameters(WIDTH, WIDTH, WIDTH);
-     parameters.set(speed);
     }//GEN-LAST:event_SpeedtxtActionPerformed
 
     private void TimeFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TimeFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TimeFieldActionPerformed
+
+    private void CalculateBtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CalculateBtonActionPerformed
+        String speedText = Speedtxt.getText();
+    String timeText = TimeField.getText();
+
+    try {
+        
+        double speed = Double.parseDouble(speedText);
+        double time = Double.parseDouble(timeText);
+
+        
+        double distance = speed * time;
+
+        
+        Resulttxt.setText("Distance: " + distance + " meters");
+
+    } catch (NumberFormatException e) {
+       
+        Resulttxt.setText("Error: Invalid input");
+       
+    }
+
+    }//GEN-LAST:event_CalculateBtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -162,6 +192,7 @@ public class FrmCalculateDistance extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton CalculateBton;
     private javax.swing.JLabel Resulttxt;
     private javax.swing.JTextField Speedtxt;
     private javax.swing.JTextField TimeField;

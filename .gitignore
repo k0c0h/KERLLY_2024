@@ -29,5 +29,9 @@ replay_pid*
 /ws/ws24Zoo/Zoo/target/
 /ws/ws26Zoo/Zoo/target/
 /AirlineReservationSystem/target/
+<<<<<<< HEAD
 /ws/Worshop/CalculateDistance/nbproject/
 /ws/Worshop/CalculateDistance/target/
+=======
+/14548/AirlineReservationSystem/target/
+>>>>>>> 002097be4e2eac393e7f827652b2358ec101569f
