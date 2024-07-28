@@ -1,13 +1,10 @@
-package com.mycompany.calculatedistance.model;
+package ec.edu.espe.calculatedistance.controller;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 /**
  *
- * @author G403
+ * @author Kerlly Chiriboga - ODS
  */
+
 public class PhisicalParameters {
 
     private double speed;
@@ -43,6 +40,5 @@ public class PhisicalParameters {
     public void setDistance(double distance) {
         this.distance = distance;
     }
-  PhisicalParameters parameters = new PhisicalParameters(speed, time, distance);
-  
 }
+

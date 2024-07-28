@@ -14,11 +14,10 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>5.1.2</version> <!-- Reemplaza con la versión más reciente -->
-            <type>jar</type>
+            <version>5.1.2</version>
         </dependency>
 
-        <!-- Dependencias de JUnit (las que ya tienes) -->
+        <!-- JUnit 5 (Jupiter) dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -38,18 +37,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>dev.elide</groupId>
-            <artifactId>elide-graalvm-java</artifactId>
-            <version>1.0.0-alpha10</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <version>5.1.1</version>
             <type>jar</type>
         </dependency>
     </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Define la versión de Java que estás utilizando -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-
 </project>
