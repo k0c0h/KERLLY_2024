@@ -35,6 +35,11 @@ public class FrmCreateFlight extends javax.swing.JFrame {
         jLabel1.setText("Crear Vuelo");
 
         btnMenu.setText("Menú Principal");
+        btnMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMenuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -79,6 +84,12 @@ public class FrmCreateFlight extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuActionPerformed
+        FrmAirlineReservation frmAirlineReservation = new FrmAirlineReservation();
+        this.setVisible(false);
+        frmAirlineReservation.setVisible(true);
+    }//GEN-LAST:event_btnMenuActionPerformed
 
     /**
      * @param args the command line arguments

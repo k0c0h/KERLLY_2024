@@ -32,7 +32,7 @@ public class FileCloud {
                 collection.insertOne(doc);
             }
 
-            System.out.println("Animal saved to cloud: " + json);
+            System.out.println("Animal saved to cloud");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

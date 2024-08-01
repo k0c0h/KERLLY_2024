@@ -17,8 +17,9 @@ public class Animal {
     private int numberOfBones;
     private boolean isVertebrate;
     private ArrayList<String> foods;
+    private String name;
 
-    public Animal(int id, String description, Date date, String gender, String cage, int numberOfBones, boolean isVertebrate, ArrayList<String> foods) {
+    public Animal(int id, String description, Date date, String gender, String cage, int numberOfBones, boolean isVertebrate, ArrayList<String> foods, String name) {
         this.id = id;
         this.description = description;
         this.date = date;
@@ -27,7 +28,10 @@ public class Animal {
         this.numberOfBones = numberOfBones;
         this.isVertebrate = isVertebrate;
         this.foods = foods;
+        this.name = name;
     }
+
+
 
     /**
      * @return the id
@@ -139,6 +143,20 @@ public class Animal {
      */
     public void setFoods(ArrayList<String> foods) {
         this.foods = foods;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
     
     
