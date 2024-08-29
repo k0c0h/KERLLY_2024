@@ -1,15 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 const SortingContext = require('./strategies/sortingContext');
 
 const app = express();
-const port = 3000;
+const port = 3007;
 
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
-
-mongoose.connect('mongodb+srv://kachiriboga:chiriboga@cluster0.mstbyy5.mongodb.net/hw17?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+app.use(express.json());
+app.use(express.static(__dirname)); 
+mongoose.connect('mongodb+srv://kachiriboga:chiriboga@cluster0.mstbyy5.mongodb.net/strategyChiriboga?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const arraySchema = new mongoose.Schema({
     unsorted: String,
@@ -18,33 +17,34 @@ const arraySchema = new mongoose.Schema({
     sorted: String
 });
 
-const ArrayModel = mongoose.model('ArrayFirstName', arraySchema);
+const ArrayModel = mongoose.model('arrayKerlly', arraySchema);
 
 app.get('/', (req, res) => {
-    res.render('index');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.post('/sort', async (req, res) => {
-    const numbers = req.body.numbers.split(',').map(Number);
-    const sortingContext = new SortingContext();
-    const sortedNumbers = sortingContext.sort(numbers);
+    const numbers = req.body.numbers;
 
-    const sortAlgorithm = sortingContext.setSortStrategy(numbers.length).constructor.name;
+    const unsortedNumbers = [...numbers];
+    
+    const sortingContext = new SortingContext();
+    const sortAlgorithmInstance = sortingContext.setSortStrategy(numbers.length); 
+    const sortAlgorithm = sortAlgorithmInstance.constructor.name; 
+    const sortedNumbers = sortAlgorithmInstance.sort(numbers);
 
     const newArray = new ArrayModel({
-        unsorted: numbers.join(', '),
+        unsorted: unsortedNumbers.join(', '),
         size: numbers.length,
-        sortAlgorithm: sortAlgorithm,
-        sorted: sortedNumbers.join(', ')
+        sortAlgorithm: sortAlgorithm, 
+        sorted: sortedNumbers.join(', ') 
     });
 
     await newArray.save();
 
-    res.render('index', {
-        sortedNumbers: sortedNumbers.join(', '),
-        sortAlgorithm: sortAlgorithm
-    });
+    res.json({ sortedNumbers, sortAlgorithm });
 });
+
 
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);

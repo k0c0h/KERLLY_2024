@@ -14,8 +14,10 @@ class SortingContext {
             return new BubbleSort();
         } else if (size >= 6 && size <= 10) {
             return new InsertionSort();
-        } else {
+        } else if (size > 10) {
             return new QuickSort();
+        } else {
+            throw new Error("Array size must be greater than 1.");
         }
     }
 }

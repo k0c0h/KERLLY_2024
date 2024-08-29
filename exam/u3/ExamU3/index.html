@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Strategy Pattern</title>
+</head>
+<body>
+    <h1>Sorting Strategy Pattern</h1>
+
+    <label for="numbers">Enter numbers separated by commas:</label>
+    <input type="text" id="numbers" placeholder="e.g. 5, 8, 7, 2">
+    <button onclick="sortNumbers()">Sort</button>
+    <button onclick="clearFields()">Clear</button> 
+
+    <h2 id="sortedNumbers"></h2>
+
+    <script>
+        async function sortNumbers() {
+            const numbersInput = document.getElementById('numbers').value;
+            const numbers = numbersInput.split(',').map(Number);
+
+            if (numbers.length <= 1) {
+                alert('Please enter at least 2 numbers.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/sort', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ numbers })
+                });
+
+                const data = await response.json();
+
+                document.getElementById('sortedNumbers').textContent = 'Sorted Numbers: ' + data.sortedNumbers.join(', ');
+                } catch (error) {
+                console.error('Error sorting numbers:', error);
+                alert('Failed to sort numbers.');
+            }
+        }
+
+        function clearFields() {
+            document.getElementById('numbers').value = '';
+            document.getElementById('sortedNumbers').textContent = '';
+        }
+    </script>
+</body>
+</html>
+
