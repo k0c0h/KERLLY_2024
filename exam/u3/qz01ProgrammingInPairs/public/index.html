@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Management</title>
+</head>
+<body>
+    <h1>Keyboard Management</h1>
+    <form id="keyboardForm">
+        <label for="id">ID:</label>
+        <input type="number" id="id" name="id" required><br><br>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" step="0.01" required><br><br>
+
+        <label for="weight">Weight:</label>
+        <input type="number" id="weight" name="weight" step="0.01" required><br><br>
+
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" required><br><br>
+
+        <button type="submit">Add Keyboard</button>
+    </form>
+
+    <br><br>
+
+    <form id="findKeyboardForm">
+        <label for="searchId">Search by ID:</label>
+        <input type="number" id="searchId" name="searchId" required>
+        <button type="submit">Find Keyboard</button>
+    </form>
+
+    <br><br>
+
+    <table id="keyboardTable" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Weight</th>
+                <th>Amount</th>
+                <th>Total Price</th>
+                <th>Approximated Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
