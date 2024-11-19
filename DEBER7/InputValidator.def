@@ -1,0 +1,7 @@
+LIBRARY InputValidator
+EXPORTS
+    ingresarEntero
+    ingresarFlotante
+    ingresarLetra
+    ingresarString
+    ingresarDouble
