@@ -51,12 +51,12 @@ string GeneradorCorreos<T>::procesarApellido(const string& apellidoCompuesto) {
         transform(palabraMinuscula.begin(), palabraMinuscula.end(), palabraMinuscula.begin(), ::tolower);
 
         if (palabrasIgnoradas.find(palabraMinuscula) == palabrasIgnoradas.end()) {
-            apellidoProcesado = palabra; // Última palabra válida encontrada
+            apellidoProcesado = palabra; 
         }
     }
 
     if (!apellidoProcesado.empty()) {
-        apellidoProcesado[0] = tolower(apellidoProcesado[0]); // Primera letra en minúscula
+        apellidoProcesado[0] = tolower(apellidoProcesado[0]); 
     }
 
     return apellidoProcesado;
@@ -68,28 +68,23 @@ string GeneradorCorreos<T>::generarCorreo(const string& primerNombre, const stri
     stringstream ssPrimerNombre(primerNombre), ssSegundoNombre(segundoNombre);
     string palabra;
 
-    // Obtener inicial del primer nombre
     while (ssPrimerNombre >> palabra) {
         char inicial = obtenerInicial(palabra);
         if (inicial != '\0') {
             correoBase += inicial;
-            break; // Usar solo la primera inicial válida
+            break;
         }
     }
 
-    // Obtener inicial del segundo nombre
     while (ssSegundoNombre >> palabra) {
         char inicial = obtenerInicial(palabra);
         if (inicial != '\0') {
             correoBase += inicial;
-            break; // Usar solo la primera inicial válida
+            break;
         }
     }
-
-    // Procesar el apellido compuesto
     correoBase += procesarApellido(apellido);
 
-    // Generar el correo final con índice si es necesario
     string correoFinal = correoBase;
     if (contadorCorreos[correoBase] > 0) {
         correoFinal += to_string(contadorCorreos[correoBase]);
@@ -100,51 +95,11 @@ string GeneradorCorreos<T>::generarCorreo(const string& primerNombre, const stri
     return correoFinal;
 }
 
-
-/*template <typename T>
-string GeneradorCorreos<T>::generarCorreo(const string& primerNombre, const string& segundoNombre, const string& apellido) {
-    string correoBase;
-    stringstream ssPrimerNombre(primerNombre), ssSegundoNombre(segundoNombre);
-    string palabra;
-
-    // Obtener inicial del primer nombre
-    while (ssPrimerNombre >> palabra) {
-        char inicial = obtenerInicial(palabra);
-        if (inicial != '\0') {
-            correoBase += inicial;
-            break; 
-        }
-    }
-
-    // Obtener inicial del segundo nombre
-    while (ssSegundoNombre >> palabra) {
-        char inicial = obtenerInicial(palabra);
-        if (inicial != '\0') {
-            correoBase += inicial;
-            break;
-        }
-    }
-
-    // Procesar el apellido
-    correoBase += procesarApellido(apellido);
-
-    // Generar el correo final con índice
-    string correoFinal = correoBase;
-    if (contadorCorreos[correoBase] > 0) {
-        correoFinal += to_string(contadorCorreos[correoBase]); // Agrega índice si ya existe
-    }
-    contadorCorreos[correoBase]++; // Incrementa el contador del correo base
-    correoFinal += "@espe.edu.ec";
-
-    return correoFinal;
-}*/
-
-
 template <typename T>
 void GeneradorCorreos<T>::ingresarDatos() {
     Validaciones<string> valString;
 
-    string primerNombre = valString.ingresar("\nIngrese el primer nombre (puede ser compuesto): ", "string");
+    string primerNombre = valString.ingresar("\nIngrese el primer nombre: ", "string");
     string segundoNombre = valString.ingresar("\nIngrese el segundo nombre (puede ser compuesto o vacio): ", "string");
     string apellidoCompuesto = valString.ingresar("\nIngrese el primer apellido: ", "string");
     string correo = generarCorreo(primerNombre, segundoNombre, apellidoCompuesto);
