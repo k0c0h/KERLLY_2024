@@ -11,13 +11,15 @@ int main()
 
     do
     {
-        cout << "\nMenu de opciones:\n";
+        system("cls");
+        cout << "\n======== Menu de opciones:=============\n";
         cout << "1. Ingresar datos y generar correo\n";
         cout << "2. Mostrar correos generados\n";
         cout << "3. Salir\n";
-        cout << "Ingrese su opcion: ";
-        opcion = ingresar_entero.ingresar("Opcion: ", "entero");
+        cout << "=======================================\n";
+        opcion = ingresar_entero.ingresar("Ingrese una de las opciones: \n", "entero");
 
+        system("cls");
         switch (opcion)
         {
         case 1:
@@ -27,14 +29,20 @@ int main()
             generador.mostrarCorreos();
             break;
         case 3:
-            cout << "Saliendo del programa.\n";
+            cout << "\nSaliendo del programa.\n";
             break;
         default:
-            cout << "Opcion no valida.\n";
+            cout << "\nOpcion no valida.\n";
             break;
+        }
+
+        if (opcion != 3)
+        {
+            cout << "Presione Enter para continuar...";
+            cin.get();
         }
     } while (opcion != 3);
 
     return 0;
 }
-// g++ main.cpp GeneradorCorreos.cpp ListaSimple.cpp  -o programa
+// g++ main.cpp GeneradorCorreos.cpp ListaSimple.cpp -o main.exe
