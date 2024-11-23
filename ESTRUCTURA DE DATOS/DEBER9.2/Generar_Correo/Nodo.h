@@ -8,23 +8,25 @@
  * NRC :                           1978                                                *
  **************************************************************************************/
 
-#include <conio.h>
+#pragma once
+#include <iostream>
 
+using namespace std;
 
-#if !defined(__Validaciones_Validaciones_h)
-#define __Validaciones_Validaciones_h
+template <typename T>
+class Nodo {
+private:
+    T dato;
+    Nodo* siguiente;
 
-template<typename T>
-class Validaciones
-{
-   public:
-      Validaciones();
-      T ingresar(char *msj, char *tipo);
-   protected:
-   private:
-      T numero;
+public:
+    Nodo(T _dato) : dato(_dato), siguiente(nullptr) {}
+    T getDato() const { return dato; }
+    void setDato(T _dato) { dato = _dato; }
+    Nodo* getSiguiente() const { return siguiente; }
+    void setSiguiente(Nodo* _siguiente) { siguiente = _siguiente; }
 
-
+    template <typename U>
+    friend class ListaSimple;
 };
 
-#endif
