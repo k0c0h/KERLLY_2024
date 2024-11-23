@@ -1,12 +1,13 @@
 /***************************************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                                  *
- * Proposito:                      Programa sobre lista simple                         *
+ * Proposito:                      Generador de Correos                                *
  * Autor:                          Kerlly Chiriboga                                    *
  * Fecha de creacion:              18/11/2024                                          *
  * Fecha de modificacion:          20/11/2024                                          *
  * Materia:                        Estructura de datos                                 *
  * NRC :                           1978                                                *
  **************************************************************************************/
+
 
 #pragma once
 #include <iostream>

@@ -1,23 +1,20 @@
-#ifndef __Validaciones_Validaciones_h
-#define __Validaciones_Validaciones_h
+/***************************************************************************************
+ *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                                  *
+ * Proposito:                      Generador de Correos                                *
+ * Autor:                          Kerlly Chiriboga                                    *
+ * Fecha de creacion:              18/11/2024                                          *
+ * Fecha de modificacion:          20/11/2024                                          *
+ * Materia:                        Estructura de datos                                 *
+ * NRC :                           1978                                                *
+ **************************************************************************************/
 
+#include "Validaciones.h"
 #include <iostream>
 #include <string>
 #include <conio.h>
 #include <cstdlib>
 
 using namespace std;
-
-template <typename T>
-class Validaciones
-{
-public:
-    Validaciones();
-    T ingresar(char *msj, char *tipo);
-
-private:
-    T numero;
-};
 
 template <typename T>
 Validaciones<T>::Validaciones()
@@ -85,7 +82,7 @@ T Validaciones<T>::ingresar(char *msj, char *tipo)
         }
         else if (tipo == "string")
         {
-            if (isalpha(c) || c == ' ')
+            if (isalpha(c))
             {
                 printf("%c", c);
                 cad[i++] = c;
@@ -153,7 +150,4 @@ T Validaciones<T>::ingresar(char *msj, char *tipo)
         }
         return valor;
     }
-    return valor; 
 }
-
-#endif
