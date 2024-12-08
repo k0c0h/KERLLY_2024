@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,28 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#ifndef CALCULADORA_H
+#define CALCULADORA_H
 
-class Matriz {
+class Calculadora {
 private:
-    int** matriz;
-    int filas;
-    int columnas;
+    double num1;
+    double num2;
 
 public:
-    Matriz(int f, int c);
-    ~Matriz();
+    Calculadora(double n1, double n2);
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    double getNum1() const;    
+    void setNum1(double n1);
 
-    void llenarMatriz();
+    double getNum2() const;
+    void setNum2(double n2);
 
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
+    double sumar() const;
+    double restar() const;
+    double multiplicar() const;
+    double dividir() const;
 };
 
 #endif
+//g++ main.cpp Vector.cpp -o main.exe

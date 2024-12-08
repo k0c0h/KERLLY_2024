@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,22 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include "Temperatura.h"
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+Temperatura::Temperatura(double c) : celsius(c) {}
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+double Temperatura::getCelsius() const {
+    return celsius;
+}
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+void Temperatura::setCelsius(double c) {
+    celsius = c;
+}
 
-    void llenarMatriz();
+double Temperatura::aFahrenheit() const {
+    return (celsius * 9.0 / 5.0) + 32.0;
+}
 
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
-
-#endif
+double Temperatura::aCelsius() const {
+    return (celsius - 32.0) * 5.0 / 9.0;
+}

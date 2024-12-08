@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,30 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include "Rectangulo.h"
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+Rectangulo::Rectangulo(double a, double al) : ancho(a), alto(al) {}
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+double Rectangulo::getAncho() const {
+    return ancho;
+}
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+double Rectangulo::getAlto() const {
+    return alto;
+}
 
-    void llenarMatriz();
+void Rectangulo::setAncho(double a) {
+    ancho = a;
+}
 
-    void mostrarMatriz() const;
+void Rectangulo::setAlto(double al) {
+    alto = al;
+}
 
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
+double Rectangulo::area() const {
+    return ancho * alto;
+}
 
-#endif
+double Rectangulo::perimetro() const {
+    return 2 * (ancho + alto);
+}

@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,30 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#ifndef FECHA_H
+#define FECHA_H
 
-class Matriz {
+class Fecha {
 private:
-    int** matriz;
-    int filas;
-    int columnas;
+    int dia;
+    int mes;
+    int anio;
+
+    void validarFecha(int d, int m, int a);
 
 public:
-    Matriz(int f, int c);
-    ~Matriz();
+    Fecha(int d, int m, int a);
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    int getDia() const;
+    void setDia(int d);
 
-    void llenarMatriz();
+    int getMes() const;
+    void setMes(int m);
 
-    void mostrarMatriz() const;
+    int getAnio() const;
+    void setAnio(int a);
 
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
+    void mostrar() const;
 };
 
-#endif
+#endif 

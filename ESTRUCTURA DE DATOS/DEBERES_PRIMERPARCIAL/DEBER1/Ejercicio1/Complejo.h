@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,25 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#ifndef COMPLEJO_H
+#define COMPLEJO_H
 
-class Matriz {
+class Complejo {
 private:
-    int** matriz;
-    int filas;
-    int columnas;
+    double real;
+    double imaginario;
 
 public:
-    Matriz(int f, int c);
-    ~Matriz();
+    Complejo(double r, double i);
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    double getReal() const;
+    void setReal(double r);
 
-    void llenarMatriz();
+    double getImaginario() const;
+    void setImaginario(double i);
 
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
+    Complejo sumar(const Complejo& c) const;
+    void mostrar() const;
 };
 
-#endif
+#endif 

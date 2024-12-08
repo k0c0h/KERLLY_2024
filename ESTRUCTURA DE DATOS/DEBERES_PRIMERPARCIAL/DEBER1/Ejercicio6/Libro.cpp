@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,27 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include "Libro.h"
+#include <stdio.h>
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+Libro::Libro(const std::string& t, const std::string& a) : titulo(t), autor(a) {}
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+std::string Libro::getTitulo() const {
+    return titulo;
+}
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+void Libro::setTitulo(const std::string& t) {
+    titulo = t;
+}
 
-    void llenarMatriz();
+std::string Libro::getAutor() const {
+    return autor;
+}
 
-    void mostrarMatriz() const;
+void Libro::setAutor(const std::string& a) {
+    autor = a;
+}
 
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
-
-#endif
+void Libro::mostrar() const {
+    printf("Titulo: %s, Autor: %s\n", titulo.c_str(), autor.c_str());
+}

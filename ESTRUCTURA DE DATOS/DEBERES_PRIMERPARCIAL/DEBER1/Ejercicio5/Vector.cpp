@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,27 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include "Vector.h"
+#include <stdio.h>
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+Vector::Vector(double x, double y) : x(x), y(y) {}
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+double Vector::getX() const {
+    return x;
+}
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+void Vector::setX(double x) {
+    this->x = x;
+}
 
-    void llenarMatriz();
+double Vector::getY() const {
+    return y;
+}
 
-    void mostrarMatriz() const;
+void Vector::setY(double y) {
+    this->y = y;
+}
 
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
-
-#endif
+void Vector::mostrar() const {
+    printf(" (%.2f, %.2f)\n", x, y);
+}

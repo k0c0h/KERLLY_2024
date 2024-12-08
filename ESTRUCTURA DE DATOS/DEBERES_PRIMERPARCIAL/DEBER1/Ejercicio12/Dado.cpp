@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,19 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include "Dado.h"
+#include <cstdlib>
+#include <ctime>
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+Dado::Dado() {
+    srand(static_cast<unsigned int>(time(0)));
+    lanzar();
+}
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+int Dado::getValor() const {
+    return valor;
+}
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
-
-    void llenarMatriz();
-
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
-
-#endif
+void Dado::lanzar() {
+    valor = rand() % 6 + 1;
+}

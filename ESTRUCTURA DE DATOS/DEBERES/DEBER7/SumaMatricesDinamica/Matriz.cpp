@@ -1,3 +1,13 @@
+/***********************************************************************
+ *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
+ * Proposito:                      Validacion de datos                 *
+ * Autor:                          Kerlly Chiriboga                    *
+ * Fecha de creacion:              06/11/2024                          *
+ * Fecha de modificacion:          07/11/2024                          *
+ * Materia:                        Estructura de datos                 *
+ * NRC :                           1978                                *
+ ***********************************************************************/
+
 #include "Matriz.h"
 #include <iostream>
 #include <cstdlib>

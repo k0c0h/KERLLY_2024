@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,26 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#ifndef LIBRO_H
+#define LIBRO_H
 
-class Matriz {
+#include <string>
+
+class Libro {
 private:
-    int** matriz;
-    int filas;
-    int columnas;
+    std::string titulo;
+    std::string autor;
 
 public:
-    Matriz(int f, int c);
-    ~Matriz();
+    Libro(const std::string& t, const std::string& a);
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    std::string getTitulo() const;
+    std::string getAutor() const;
 
-    void llenarMatriz();
+    void setTitulo(const std::string& t);
+    void setAutor(const std::string& a);
 
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
+    void mostrar() const;
 };
 
 #endif

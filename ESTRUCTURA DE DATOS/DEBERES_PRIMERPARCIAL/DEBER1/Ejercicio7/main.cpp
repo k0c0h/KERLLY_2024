@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,21 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include <stdio.h>
+#include <stdlib.h>
+#include "Temperatura.h"
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+int main() {
+    double celsius;
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+    printf("Ingrese la temperatura en Celsius: ");
+    while (scanf("%lf", &celsius) != 1) {
+        printf("Entrada invalida.\nIngrese un valor numerico: ");
+        while(getchar() != '\n');
+    }
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    Temperatura t(celsius);
+    printf("En Fahrenheit: %.2lf\n", t.aFahrenheit());
 
-    void llenarMatriz();
-
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
-
-#endif
+    return 0;
+}

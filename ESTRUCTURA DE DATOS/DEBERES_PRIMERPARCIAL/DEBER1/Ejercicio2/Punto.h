@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,24 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#ifndef PUNTO_H
+#define PUNTO_H
 
-class Matriz {
+class Punto {
 private:
-    int** matriz;
-    int filas;
-    int columnas;
+    double x;
+    double y;
 
 public:
-    Matriz(int f, int c);
-    ~Matriz();
+    Punto(double xCoord, double yCoord);
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    double getX() const;
+    double getY() const;
 
-    void llenarMatriz();
+    void setX(double xCoord);
+    void setY(double yCoord);
 
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
+    double distancia(const Punto& otro) const;
 };
 
 #endif

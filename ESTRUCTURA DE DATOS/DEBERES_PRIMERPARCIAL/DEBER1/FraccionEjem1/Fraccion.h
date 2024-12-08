@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,28 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#ifndef FRACCION_H
+#define FRACCION_H
 
-class Matriz {
+class Fraccion {
 private:
-    int** matriz;
-    int filas;
-    int columnas;
+    int numerador;  
+    int denominador;  
+
+    void simplificar();
+    int mcd(int a, int b) const;
 
 public:
-    Matriz(int f, int c);
-    ~Matriz();
+    Fraccion(int n, int d);
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    int getNumerador() const; 
+    void setNumerador(int n);     
+    
+    int getDenominador() const;    
+    void setDenominador(int d);
 
-    void llenarMatriz();
-
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
+    Fraccion sumar(const Fraccion& f) const;
+    void mostrar() const;
 };
 
-#endif
+#endif 

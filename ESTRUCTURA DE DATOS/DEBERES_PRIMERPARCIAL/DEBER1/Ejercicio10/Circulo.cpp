@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,23 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include "Circulo.h"
+#include <cmath>
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+Circulo::Circulo(double r) : radio(r) {}
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+double Circulo::getRadio() const {
+    return radio;
+}
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+void Circulo::setRadio(double r) {
+    radio = r;
+}
 
-    void llenarMatriz();
+double Circulo::area() const {
+    return M_PI * radio * radio;
+}
 
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
-
-#endif
+double Circulo::perimetro() const {
+    return 2 * M_PI * radio;
+}

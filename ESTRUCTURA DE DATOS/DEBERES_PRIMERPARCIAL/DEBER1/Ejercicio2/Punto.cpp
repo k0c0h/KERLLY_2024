@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,27 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#include "Punto.h"
+#include <cmath>
 
-class Matriz {
-private:
-    int** matriz;
-    int filas;
-    int columnas;
+Punto::Punto(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
 
-public:
-    Matriz(int f, int c);
-    ~Matriz();
+double Punto::getX() const {
+    return x;
+}
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+double Punto::getY() const {
+    return y;
+}
 
-    void llenarMatriz();
+void Punto::setX(double xCoord) {
+    x = xCoord;
+}
 
-    void mostrarMatriz() const;
+void Punto::setY(double yCoord) {
+    y = yCoord;
+}
 
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
-};
-
-#endif
+double Punto::distancia(const Punto& otro) const {
+    return sqrt(pow(x - otro.x, 2) + pow(y - otro.y, 2));
+}

@@ -1,6 +1,6 @@
 /***********************************************************************
  *            UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE                  *
- * Proposito:                      Validacion de datos                 *
+ * Proposito:                      TDA                                 *
  * Autor:                          Kerlly Chiriboga                    *
  * Fecha de creacion:              06/11/2024                          *
  * Fecha de modificacion:          07/11/2024                          *
@@ -8,27 +8,21 @@
  * NRC :                           1978                                *
  ***********************************************************************/
 
-#ifndef MATRIZ_H
-#define MATRIZ_H
+#ifndef CUENTA_BANCARIA_H
+#define CUENTA_BANCARIA_H
 
-class Matriz {
+class CuentaBancaria {
 private:
-    int** matriz;
-    int filas;
-    int columnas;
+    double saldo;
 
 public:
-    Matriz(int f, int c);
-    ~Matriz();
+    CuentaBancaria(double s);
 
-    int getElemento(int f, int c) const;
-    void setElemento(int f, int c, int valor);
+    double getSaldo() const;
+    void setSaldo(double s);
 
-    void llenarMatriz();
-
-    void mostrarMatriz() const;
-
-    static int sumaRecursivaMatrices(const Matriz& m1, const Matriz& m2, int f, int c);
+    void depositar(double cantidad);
+    void retirar(double cantidad);
 };
 
 #endif
