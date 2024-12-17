@@ -84,14 +84,18 @@ int main() {
     Calculadora<string> calculadora;
 
     string expresionInfija;
-    cout << "Introduce la expresión infija: ";
-    cin >> expresionInfija;
+
+    cout << "Introduce la expresion infija: ";
+    getline(cin, expresionInfija); // Espera a que el usuario presione Enter
 
     string postfija = calculadora.infijaAPostfija(expresionInfija);
     string prefija = calculadora.infijaAPrefija(expresionInfija);
 
-    cout << "Notación Polaca Inversa (Postfija): " << postfija << endl;
-    cout << "Notación Polaca (Prefija): " << prefija << endl;
+    cout << "Notacion Polaca Inversa (Postfija): " << postfija << endl;
+    cout << "Notacion Polaca (Prefija): " << prefija << endl;
 
+    cout << "\nPresiona Enter para salir...";
+    cin.ignore();  // Espera otro Enter antes de salir
     return 0;
 }
+//g++ CALCULADORA_POLACA.cpp -o main.exe
