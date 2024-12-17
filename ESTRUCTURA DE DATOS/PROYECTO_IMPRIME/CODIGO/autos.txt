@@ -1,0 +1,3 @@
+  - PBB1997 NISSAN NEGRO 956185 No se encuentra en el parqueadero
+  - PVZ1213 NISSAN AMARILLO 782766 Estacionado
+  - PQW1234 PEUGEOT VERDE 472270 Dentro del parqueadero
