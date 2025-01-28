@@ -10,4 +10,3 @@ Miguel,Ramirez,7788990011,miguel.ramirez@example.com,VWX5678
 Sofia,Diaz,8899001122,sofia.diaz@example.com,YZA1234,BCD4567
 joffre,gomez,1728677574,jegomez6@gmail.com
 Mario,Anrrango,1726192618,mario_anrrango@hotmail.com,REM3012,RNO3436,RNO3436
-Kerlly,Chiriboga,1728724970,chiribogakerly@gmail.com,RDD0921
