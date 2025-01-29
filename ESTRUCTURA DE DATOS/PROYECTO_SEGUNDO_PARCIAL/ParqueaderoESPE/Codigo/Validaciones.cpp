@@ -258,7 +258,7 @@ std::string Validaciones<T>::ingresarPlaca(char *msj)
 template <typename T>
 std::string Validaciones<T>::ingresarCedula(char *msj)
 {
-    char cad[20]; // Tamaño máximo para la cédula
+    char cad[11]; // 10 dígitos + '\0'
     char c;
     int i = 0;
     printf("%s", msj);
@@ -286,13 +286,47 @@ std::string Validaciones<T>::ingresarCedula(char *msj)
 
     std::string cedula(cad);
 
-    // Validar longitud de la cédula (10 dígitos)
-    if (cedula.length() != 10) {
-        printf("\nCedula invalida. Intente de nuevo.\n");
-        return ingresarCedula(msj); // Recursividad en caso de error
+    // Validar la cédula usando el algoritmo de verificación
+    if (!validarCedulaEcuatoriana(cedula)) {
+        printf("\nCédula inválida. Intente de nuevo.\n");
+        return ingresarCedula(msj); // Pedir la cédula nuevamente
     }
 
     return cedula; // Devolver la cédula válida
+}
+
+template <typename T>
+bool Validaciones<T>::validarCedulaEcuatoriana(const std::string& cedula) {
+    if (cedula.length() != 10) return false; // Verificar la longitud
+
+    // Verificar que todos los caracteres sean numéricos
+    for (char c : cedula) {
+        if (!isdigit(c)) return false;
+    }
+
+    int provincia = std::stoi(cedula.substr(0, 2)); // Obtener provincia
+    int tercerDigito = cedula[2] - '0'; // Obtener tercer dígito
+
+    if (provincia < 1 || provincia > 24) return false; // Provincia válida
+    if (tercerDigito < 0 || tercerDigito > 6) return false; // Tercer dígito válido
+
+    // Validar dígito verificador con el algoritmo oficial
+    int coeficientes[9] = {2, 1, 2, 1, 2, 1, 2, 1, 2};
+    int suma = 0;
+
+    for (int i = 0; i < 9; i++) {
+        int valor = (cedula[i] - '0') * coeficientes[i];
+        if (valor >= 10) valor -= 9;
+        suma += valor;
+    }
+
+    // Cálculo del dígito verificador
+    int digitoVerificadorCalculado = (10 - (suma % 10)) % 10;
+    if (digitoVerificadorCalculado == 10) digitoVerificadorCalculado = 0; // Si el dígito es 10, se toma como 0
+
+    int digitoVerificadorCedula = cedula[9] - '0'; // Convertir décimo dígito a entero
+
+    return (digitoVerificadorCalculado == digitoVerificadorCedula); // Comparar
 }
 
 template <typename T>

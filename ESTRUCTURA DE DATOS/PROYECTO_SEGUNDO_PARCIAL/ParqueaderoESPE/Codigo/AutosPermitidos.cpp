@@ -64,7 +64,7 @@ void AutosPermitidos::guardarEnArchivo() {
 }
 
 void AutosPermitidos::guardarPropietarios() {
-    ofstream archivoPropietarios("Propietarios.txt", ios::trunc);
+    ofstream archivoPropietarios("Propietarios.txt", ios::app);
     if (!archivoPropietarios.is_open()) {
         cerr << "Error al abrir el archivo Propietarios.txt para guardar." << endl;
         return;
