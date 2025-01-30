@@ -21,7 +21,7 @@
 #include <string>
 #include <fstream>
 #include "BusquedaBinaria.h"
-
+#include "Backup.h"
 
 using namespace std;
 // Constructor: Inicializa el menú con las opciones disponibles
@@ -38,6 +38,7 @@ Menu::Menu(Parqueadero* p, HistorialEstacionamiento* h, AutosPermitidos* a)
         "Ordenar autos permitidos",
         "Mostrar propietarios",
         "Mostrar historial de estacionamientos",
+        "Opciones de Backup",
         "Salir"
     };
 }
@@ -55,6 +56,7 @@ void Menu::mostrarMenu() {
             cout << "   " << opciones[i] << "\n"; // Opción no seleccionada
         }
     }
+    cout << "\nPresiona F1 para ver la guia rapida.";
 }
 
 // Ejecutar la opción seleccionada
@@ -138,6 +140,10 @@ void Menu::ejecutarOpcion() {
             mostrarSubmenuHistorial();
             break;
         case 10:
+            Backup backup;
+            mostrarSubmenuBackup(backup);
+            break;
+        case 11:
             cout << "Saliendo del programa...\n";
             exit(0);
         default:
@@ -145,6 +151,53 @@ void Menu::ejecutarOpcion() {
             break;
     }
     system("pause");
+}
+
+void Menu::mostrarSubmenuBackup(Backup& backup) {
+    vector<string> opcionesBackup = {
+        "Realizar Backup de todos los archivos",
+        "Realizar Backup de un archivo especifico",
+        "Eliminar un archivo",
+        "Recuperar un Backup",
+        "Regresar al menu principal"
+    };
+
+    int seleccionSubmenu = 0;
+
+    while (true) {
+        system("cls");
+        cout << "\nOpciones de Backup\n";
+        cout << "-----------------------\n";
+        
+        for (int i = 0; i < opcionesBackup.size(); i++) {
+            if (i == seleccionSubmenu) {
+                cout << " > " << opcionesBackup[i] << " <\n";
+            } else {
+                cout << "   " << opcionesBackup[i] << "\n";
+            }
+        }
+
+        char tecla = _getch();
+        if (tecla == 72) { // Flecha arriba
+            seleccionSubmenu = (seleccionSubmenu - 1 + opcionesBackup.size()) % opcionesBackup.size();
+        } else if (tecla == 80) { // Flecha abajo
+            seleccionSubmenu = (seleccionSubmenu + 1) % opcionesBackup.size();
+        } else if (tecla == '\r') { // Enter
+            system("cls");
+            if (seleccionSubmenu == 0) {
+                backup.realizarBackupTodos();
+            } else if (seleccionSubmenu == 1) {
+                backup.realizarBackupEspecifico();
+            } else if (seleccionSubmenu == 2) {
+                backup.eliminarArchivo();
+            } else if (seleccionSubmenu == 3) {
+                backup.recuperarBackup();
+            } else if (seleccionSubmenu == 4) {
+                break; // Regresar al menú principal
+            }
+            system("pause");
+        }
+    }
 }
 
 // Mostrar submenú de autos permitidos
@@ -427,27 +480,55 @@ void Menu::iniciar() {
 }
 
 void Menu::mostrarGuiaRapida() {
-    system("cls");
-    std::cout << "Guia Rapida para el Usuario del Sistema de Parqueadero\n";
-    std::cout << "------------------------------------------------------\n";
-    std::cout << "- Consultar el Estado del Parqueadero\n";
-    std::cout << "  Utiliza la opcion 'Mostrar estado del parqueadero' en el menu principal para ver los espacios disponibles y ocupados.\n\n";
-    std::cout << "- Estacionar un Auto\n";
-    std::cout << "  Asegurate de que el auto este registrado como permitido.\n";
-    std::cout << "  Selecciona un espacio disponible.\n\n";
-    std::cout << "- Retirar un Auto\n";
-    std::cout << "  Ingresa la placa del auto para liberar el espacio ocupado.\n\n";
-    std::cout << "- Registrar Autos Permitidos\n";
-    std::cout << "  Agrega nuevos autos permitidos ingresando su placa, marca, color y datos del propietario.\n\n";
-    std::cout << "- Eliminar Autos Permitidos\n";
-    std::cout << "  Elimina autos registrados si no necesitan acceso al parqueadero.\n\n";
-    std::cout << "- Visualizar Historial\n";
-    std::cout << "  Consulta las entradas y salidas del parqueadero por placa o fecha.\n\n";
-    std::cout << "- Navegacion del Menu\n";
-    std::cout << "  Usa las flechas del teclado para moverte entre las opciones.\n";
-    std::cout << "  El sistema actualizara automaticamente la informacion despues de cada operacion.\n\n";
-    std::cout << "Presiona cualquier tecla para regresar al menu principal...\n";
-    _getch(); // Esperar a que el usuario presione una tecla
+    vector<string> paginas = {
+        "Guia Rapida - Pagina 1\n"
+        "----------------------------\n"
+        "- Consultar Estado del Parqueadero\n"
+        "  - Usa 'Mostrar estado del parqueadero' para visualizar"
+        "   graficamente los espacios ocupados o libres\n\n"
+        "- Estacionar un Auto\n"
+        "  - Auto debe estar registrado previamente.\n"
+        "  - Selecciona un espacio disponible.\n\n"
+        "Usa las flechas para pasar a la siguiente pagina, ESC para salir.\n",
+
+        "Guia Rapida - Pagina 2\n"
+        "----------------------------\n"
+        "- Retirar un Auto\n"
+        "  - Ingresa la placa del auto.\n"
+        "  - Se liberara el espacio ocupado.\n\n"
+        "- Registrar Autos Permitidos\n"
+        "  - Agrega autos con placa, marca y datos del Propietario.\n\n"
+        "Usa las flechas para pasar a la siguiente pagina o para regresar, ESC para salir.\n",
+
+        "Guia Rapida - Pagina 3 y ultima\n"
+        "--------------------------------\n"
+        "- Eliminar Autos Permitidos\n"
+        "  - Elimina autos que ya no necesitan acceso.\n\n"
+        "- Visualizar Historial\n"
+        "  - Consulta entradas y salidas por placa o fecha\n"
+        "  - Mostrar historiales de acuerdo a varios atributos.\n\n"
+        "- Navegacion del Menu\n"
+        "  - Usa las flechas para moverte por todas las opciones.\n\n"
+        "Usa las flechas para regresar, ESC para salir.\n"
+    };
+
+    int paginaActual = 0;
+
+    while (true) {
+        system("cls");
+        cout << paginas[paginaActual];
+
+        char tecla = _getch();
+        if (tecla == 27) { // Tecla ESC para salir
+            break;
+        } else if (tecla == 75 && paginaActual > 0) { // Flecha izquierda (código ASCII 75)
+            paginaActual--;
+        } else if (tecla == 77 && paginaActual < paginas.size() - 1) { // Flecha derecha (código ASCII 77)
+            paginaActual++;
+        }
+    }
+
+    system("cls"); // Limpiar pantalla antes de regresar al menú principal
 }
 
 void Menu::ordenarAutosPermitidos() {
