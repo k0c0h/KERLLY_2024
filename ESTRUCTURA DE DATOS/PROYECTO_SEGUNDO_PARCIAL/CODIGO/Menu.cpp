@@ -21,6 +21,7 @@
 #include <string>
 #include <fstream>
 #include "BusquedaBinaria.h"
+#include "ArbolRN.h"
 
 using namespace std;
 // Constructor: Inicializa el menú con las opciones disponibles
@@ -34,6 +35,9 @@ Menu::Menu(Parqueadero *p, HistorialEstacionamiento *h, AutosPermitidos *a)
         "Registrar auto permitido",
         "Eliminar auto permitido",
         "Mostrar autos permitidos",
+        "Imprimir arbol",
+        "Mostrar Recorridos",
+        "Opciones de Busqueda",
         "Ordenar autos permitidos",
         "Mostrar propietarios",
         "Mostrar historial de estacionamientos",
@@ -73,32 +77,41 @@ void Menu::ejecutarOpcion()
     {
         string placa, espacioId;
         Validaciones<string> validador;
-        Validaciones<int> ingresar_Entero;
-        placa = validador.ingresarPlaca("Ingresa la placa del auto a estacionar(sin guiones): ");
+
+        // Ingresar y validar la placa
+        placa = validador.ingresarPlaca("Ingresa la placa del auto a estacionar (sin guiones): ");
         cout << endl;
+
+        // Verificar si el auto está permitido
         if (!autosPermitidos->buscarAuto(placa))
         {
             cout << "El auto no esta permitido. Registrelo primero.\n";
             break;
         }
+
+        // Mostrar estado actual del parqueadero
         parqueadero->mostrarEstado();
-        espacioId = validador.ingresarEspacioId("Ingrese el id del espacio a estacionarse: ");
-        cout << endl;
+
+        // Estacionamiento automático
+        espacioId = ""; // Forzar asignación aleatoria
+
+        // Intentar estacionar el auto
         if (parqueadero->estacionarAuto(placa, espacioId))
         {
-            historial->registrarEntrada(placa, espacioId);
+            historial->registrarEntrada(placa, espacioId); // Registrar la entrada con el espacio asignado
         }
         break;
     }
     case 2:
-    {
+    { // Retirar auto
         string placa;
         Validaciones<string> validador;
-        placa = validador.ingresarPlaca("Ingrese la placa del auto a retirar(sin guiones): ");
-        if (parqueadero->retirarAuto(placa))
-        {
-            historial->registrarSalida(placa);
-        }
+
+        placa = validador.ingresarPlaca("Ingrese la placa del auto a retirar (sin guiones): ");
+
+        // `retirarAuto` ya registra la salida en el historial
+        parqueadero->retirarAuto(placa);
+
         break;
     }
     case 3:
@@ -136,18 +149,31 @@ void Menu::ejecutarOpcion()
         break;
     }
     case 5:
-        mostrarSubmenuAutosPermitidos();
+        autosPermitidos->mostrarAutos();
         break;
-    case 6: // Agregar caso para ordenar los autos permitidos
+    case 6:
+    {
+        historial->imprimirArbol();
+        break;
+    }
+    case 7:
+    {
+        historial->mostrarRecorridos();
+        break;
+    }
+    case 8:
+        submenuBusquedas();
+        break;
+    case 9: // Agregar caso para ordenar los autos permitidos
         mostrarMenuOrdenamiento(autosPermitidos->getRegistros());
         break;
-    case 7:
+    case 10:
         autosPermitidos->mostrarPropietarios();
         break;
-    case 8:
+    case 11:
         mostrarSubmenuHistorial();
         break;
-    case 9:
+    case 12:
         cout << "Saliendo del programa...\n";
         exit(0);
     default:
@@ -158,14 +184,17 @@ void Menu::ejecutarOpcion()
 }
 
 // Mostrar submenú de autos permitidos
-void Menu::mostrarSubmenuAutosPermitidos()
+void Menu::submenuBusquedas()
 {
     vector<string> opcionesAutos = {
-        "Mostrar todos los autos permitidos",
         "Buscar auto por placa",
-        "Buscar autos por prefijo de placa",  // Opción nueva
+        "Buscar autos permitidos por prefijo de placa",  // Opción nueva
         "Buscar el primer ingreso por fecha especifica", // Opción nueva
-        "Buscar autos por rango de fechas",  // Opción nueva
+        "Buscar autos por rango de fechas",              // Opción nueva
+        "Buscar autos en un espacio por rango de fechas",
+        "Buscar autos por duracion de estacionamiento en una fecha",
+        "Buscar espacio mas y menos ocupado por numero de veces",
+        "Buscar espacio mas y menos ocupado por duracion",
         "Regresar al menu principal"};
 
     int seleccionSubmenu = 0;
@@ -173,7 +202,7 @@ void Menu::mostrarSubmenuAutosPermitidos()
     while (true)
     {
         system("cls");
-        cout << "Opciones de Autos Permitidos\n";
+        cout << "   Opciones de Busqueda      \n";
         cout << "-----------------------------\n";
 
         for (int i = 0; i < opcionesAutos.size(); i++)
@@ -202,11 +231,6 @@ void Menu::mostrarSubmenuAutosPermitidos()
             system("cls");
             if (seleccionSubmenu == 0)
             {
-                // Opción: Mostrar todos los autos permitidos
-                autosPermitidos->mostrarAutos();
-            }
-            else if (seleccionSubmenu == 1)
-            {
                 // Opción: Buscar auto por placa
                 string placa;
                 Validaciones<string> validador;
@@ -219,21 +243,20 @@ void Menu::mostrarSubmenuAutosPermitidos()
                 }
                 else
                 {
-                    cout << "El auto con placa " << placa << " no está permitido.\n";
+                    cout << "El auto con placa " << placa << " no esta permitido.\n";
                 }
             }
-            else if (seleccionSubmenu == 2)
+            else if (seleccionSubmenu == 1)
             {
                 // Opción: Buscar autos por prefijo de placa
                 string prefijo;
                 Validaciones<string> validador;
-                cout << "Ingrese el prefijo de la placa: ";
-                cin >> prefijo;
-
+                prefijo = validador.ingresarPrefijo("Ingrese el prefijo de la placa(Ejem: XYZ): ");
+                cout << endl;
                 // Usar la clase BusquedaBinaria para encontrar los autos con el prefijo
                 BusquedaBinaria::mostrarRegistros(autosPermitidos->getRegistros(), prefijo);
             }
-            else if (seleccionSubmenu == 3)
+            else if (seleccionSubmenu == 2)
             {
                 // Opción: Buscar el primer ingreso por fecha específica
                 string fecha;
@@ -244,20 +267,50 @@ void Menu::mostrarSubmenuAutosPermitidos()
                 // Llamar al método de HistorialEstacionamiento para mostrar el primer ingreso
                 historial->mostrarPrimerIngresoPorFecha(fecha);
             }
-            else if (seleccionSubmenu == 4)
+            else if (seleccionSubmenu == 3)
             {
                 // Opción: Buscar autos por rango de fechas
                 string fechaInicio, fechaFin;
                 Validaciones<string> validador;
                 fechaInicio = validador.ingresarFecha("Ingrese la fecha de inicio (YYYY-MM-DD): ");
-                cout <<endl;
+                cout << endl;
                 fechaFin = validador.ingresarFecha("Ingrese la fecha de fin (YYYY-MM-DD): ");
                 cout << endl;
 
                 // Llamar al método de HistorialEstacionamiento para mostrar autos en el rango de fechas
                 historial->mostrarAutosPorRangoFechas(fechaInicio, fechaFin);
             }
+            else if (seleccionSubmenu == 4)
+            {
+                string espacioId, fechaInicio, fechaFin;
+                Validaciones<string> validador;
+                espacioId = validador.ingresarEspacioId("Ingrese el ID del espacio: ");
+                cout << endl;
+                fechaInicio = validador.ingresarFecha("Ingrese la fecha de inicio (YYYY-MM-DD): ");
+                cout << endl;
+                fechaFin = validador.ingresarFecha("Ingrese la fecha de fin (YYYY-MM-DD): ");
+                cout << endl;
+                historial->buscarAutosEnEspacioPorRangoFechas(espacioId, fechaInicio, fechaFin);
+            }
             else if (seleccionSubmenu == 5)
+            { // Buscar por duración
+                string fecha, duracionMin, duracionMax;
+                Validaciones<string> validador;
+                fecha = validador.ingresarFecha("Ingrese la fecha de busqueda (YYYY-MM-DD): ");
+                cout << endl;
+                duracionMin = validador.ingresarDuracion("Ingrese la duracion minima (HH:MM): ");
+                cout << endl;
+                duracionMax = validador.ingresarDuracion("Ingrese la duracion maxima en (HH:MM): ");
+                cout << endl;
+                historial->mostrarAutosPorDuracionEnFecha(fecha, duracionMin, duracionMax);
+            }
+            else if (seleccionSubmenu == 6) { // Buscar espacio más y menos ocupado
+                historial->mostrarEspacioMasMenosOcupado();
+            } 
+            else if (seleccionSubmenu == 7) { // Buscar espacio con mayor y menor tiempo de uso
+                historial->mostrarEspacioMasMenosTiempoOcupado();
+            }
+            else if (seleccionSubmenu == 8)
             {
                 // Opción: Regresar al menú principal
                 break;
@@ -471,27 +524,60 @@ void Menu::iniciar()
 
 void Menu::mostrarGuiaRapida()
 {
-    system("cls");
-    std::cout << "Guia Rapida para el Usuario del Sistema de Parqueadero\n";
-    std::cout << "------------------------------------------------------\n";
-    std::cout << "- Consultar el Estado del Parqueadero\n";
-    std::cout << "  Utiliza la opcion 'Mostrar estado del parqueadero' en el menu principal para ver los espacios disponibles y ocupados.\n\n";
-    std::cout << "- Estacionar un Auto\n";
-    std::cout << "  Asegurate de que el auto este registrado como permitido.\n";
-    std::cout << "  Selecciona un espacio disponible.\n\n";
-    std::cout << "- Retirar un Auto\n";
-    std::cout << "  Ingresa la placa del auto para liberar el espacio ocupado.\n\n";
-    std::cout << "- Registrar Autos Permitidos\n";
-    std::cout << "  Agrega nuevos autos permitidos ingresando su placa, marca, color y datos del propietario.\n\n";
-    std::cout << "- Eliminar Autos Permitidos\n";
-    std::cout << "  Elimina autos registrados si no necesitan acceso al parqueadero.\n\n";
-    std::cout << "- Visualizar Historial\n";
-    std::cout << "  Consulta las entradas y salidas del parqueadero por placa o fecha.\n\n";
-    std::cout << "- Navegacion del Menu\n";
-    std::cout << "  Usa las flechas del teclado para moverte entre las opciones.\n";
-    std::cout << "  El sistema actualizara automaticamente la informacion despues de cada operacion.\n\n";
-    std::cout << "Presiona cualquier tecla para regresar al menu principal...\n";
-    _getch(); // Esperar a que el usuario presione una tecla
+    vector<string> paginas = {
+        "Guia Rapida - Pagina 1\n"
+        "----------------------------\n"
+        "- Consultar Estado del Parqueadero\n"
+        "  - Usa 'Mostrar estado del parqueadero' para visualizar"
+        "   graficamente los espacios ocupados o libres\n\n"
+        "- Estacionar un Auto\n"
+        "  - Auto debe estar registrado previamente.\n"
+        "  - Selecciona un espacio disponible.\n\n"
+        "Usa las flechas para pasar a la siguiente pagina, ESC para salir.\n",
+
+        "Guia Rapida - Pagina 2\n"
+        "----------------------------\n"
+        "- Retirar un Auto\n"
+        "  - Ingresa la placa del auto.\n"
+        "  - Se liberara el espacio ocupado.\n\n"
+        "- Registrar Autos Permitidos\n"
+        "  - Agrega autos con placa, marca y datos del Propietario.\n\n"
+        "Usa las flechas para pasar a la siguiente pagina o para regresar, ESC para salir.\n",
+
+        "Guia Rapida - Pagina 3 y ultima\n"
+        "--------------------------------\n"
+        "- Eliminar Autos Permitidos\n"
+        "  - Elimina autos que ya no necesitan acceso.\n\n"
+        "- Visualizar Historial\n"
+        "  - Consulta entradas y salidas por placa o fecha\n"
+        "  - Mostrar historiales de acuerdo a varios atributos.\n\n"
+        "- Navegacion del Menu\n"
+        "  - Usa las flechas para moverte por todas las opciones.\n\n"
+        "Usa las flechas para regresar, ESC para salir.\n"};
+
+    int paginaActual = 0;
+
+    while (true)
+    {
+        system("cls");
+        cout << paginas[paginaActual];
+
+        char tecla = _getch();
+        if (tecla == 27)
+        { // Tecla ESC para salir
+            break;
+        }
+        else if (tecla == 75 && paginaActual > 0)
+        { // Flecha izquierda (cÃ³digo ASCII 75)
+            paginaActual--;
+        }
+        else if (tecla == 77 && paginaActual < paginas.size() - 1)
+        { // Flecha derecha (cÃ³digo ASCII 77)
+            paginaActual++;
+        }
+    }
+
+    system("cls"); // Limpiar pantalla antes de regresar al menÃº principal
 }
 
 void Menu::ordenarAutosPermitidos()

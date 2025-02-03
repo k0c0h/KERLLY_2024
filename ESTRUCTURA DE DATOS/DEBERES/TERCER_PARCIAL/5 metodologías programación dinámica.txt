@@ -1,0 +1,12 @@
+5 metodologías programación dinámica, backtracking, algoritmos dinámicos, algoritmos voraces, divide y venceras
+LUNES
+Árbol Rojo - Negro
+dibujando como en el simulador
+recuperar los puestos y graficar
+no dejar elegir sino dar un parqueadero aleatorio
+y graficar el árbol con el numero de parqueadero que de aleatorio 
+no de forma lineal sino como va ingresando
+sacar la altura, profundidad, nivel, 
+Recorridos in orden, preorden, postorden
+hacer recursivo, no ietrativo
+hacer una búsqueda binaria por cada integrante 

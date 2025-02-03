@@ -1,4 +1,16 @@
 #include "ArbolRN.h"
+#include <iostream>
+#include <queue>  // Para recorrido por niveles
+#include <iomanip>  // Para formato de impresión
+#include <cmath>
+#include <vector>
+
+// Definición de colores para la consola
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define WHITE   "\033[37m"
+
+using namespace std;
 
 // Constructor: inicializa el árbol con un nodo nulo
 ArbolRN::ArbolRN() {
@@ -174,4 +186,204 @@ void ArbolRN::eliminarNodo(NodoRN* nodo) {
         eliminarNodo(nodo->derecho);
         delete nodo;
     }
+}
+
+void ArbolRN::imprimirArbol() const {
+    if (raiz == nulo) {
+        cout << "El árbol está vacío.\n";
+        return;
+    }
+
+    cout << "Árbol Rojo-Negro (In-Orden):\n";
+    imprimirInOrden(raiz);
+    cout << endl;
+}
+
+// Función auxiliar para imprimir en orden
+void ArbolRN::imprimirInOrden(NodoRN* nodo) const {
+    if (nodo != nulo) {
+        imprimirInOrden(nodo->izquierdo);
+        cout << "Placa: " << nodo->placa << " | Espacio: " << nodo->espacioId
+             << " | Ingreso: " << nodo->fechaHoraIngreso
+             << " | Color: " << (nodo->color ? "Rojo" : "Negro") << endl;
+        imprimirInOrden(nodo->derecho);
+    }
+}
+
+void ArbolRN::imprimirArbolVertical() const {
+    if (raiz == nulo) {
+        cout << "El árbol está vacío.\n";
+        return;
+    }
+
+    // Cola para el recorrido por niveles
+    queue<pair<NodoRN*, int>> cola;
+    cola.push({raiz, 0});  // Nodo con su nivel
+
+    // Variables para determinar la altura máxima del árbol
+    int altura = 0;
+    while (!cola.empty()) {
+        NodoRN* actual = cola.front().first;
+        int nivel = cola.front().second;
+        cola.pop();
+
+        altura = max(altura, nivel);  // Actualizar la altura máxima
+
+        if (actual->izquierdo != nulo) cola.push({actual->izquierdo, nivel + 1});
+        if (actual->derecho != nulo) cola.push({actual->derecho, nivel + 1});
+    }
+
+    // Depuración: Mostrar la altura del árbol
+    cout << "Altura del árbol: " << altura << endl;
+
+    // Cola para la impresión
+    queue<pair<NodoRN*, int>> colaImpresion;
+    cola.push({raiz, 0});  // Nodo raíz
+
+    // Espaciado fijo entre nodos
+    int espacioBase = 1;  // Reducido a 1 para más cercanía
+
+    // Recorrer el árbol nivel por nivel
+    for (int nivel = 0; nivel <= altura; ++nivel) {
+        // Imprimir el nivel actual
+        cout << "Nivel " << nivel << ": ";
+
+        int tamanoNivel = cola.size();
+
+        // Ajustar el espaciado entre nodos en niveles más profundos
+        int nivelEspaciado = espacioBase * (altura - nivel + 1);  // Menos espaciado a medida que bajamos
+
+        while (tamanoNivel > 0) {
+            pair<NodoRN*, int> nodoNivel = cola.front();
+            cola.pop();
+
+            NodoRN* actual = nodoNivel.first;
+            int nivelNodo = nodoNivel.second;
+
+            if (nivelNodo == nivel) {
+                // Si estamos en el primer nivel (raíz), colocarla centrada
+                if (nivel == 0) {
+                    cout << setw(altura * 2) << (actual->color ? RED : WHITE) << actual->espacioId << RESET;
+                } else {
+                    // Imprimir el nodo con color y espaciado
+                    cout << setw(nivelEspaciado) << (actual->color ? RED : WHITE) << actual->espacioId << RESET;
+                }
+            }
+
+            // Agregar los hijos a la cola si no son nulos
+            if (actual->izquierdo != nulo) cola.push({actual->izquierdo, nivelNodo + 1});
+            if (actual->derecho != nulo) cola.push({actual->derecho, nivelNodo + 1});
+
+            tamanoNivel--;
+        }
+        cout << endl; // Nueva línea para el siguiente nivel
+    }
+}
+
+void ArbolRN::recorridoPreorden(NodoRN* nodo) const {
+    if (nodo == nulo) return;
+    
+    // Mostrar el nodo actual
+    cout << "(" << (nodo->color ? RED : WHITE) << nodo->espacioId << RESET << ") - ";
+    
+    // Recorrer primero el subárbol izquierdo
+    recorridoPreorden(nodo->izquierdo);
+    
+    // Luego el subárbol derecho
+    recorridoPreorden(nodo->derecho);
+}
+
+void ArbolRN::recorridoInorden(NodoRN* nodo) const {
+    if (nodo == nulo) return;
+    
+    // Recorrer primero el subárbol izquierdo
+    recorridoInorden(nodo->izquierdo);
+    
+    // Mostrar el nodo actual
+    cout << "(" << (nodo->color ? RED : WHITE) << nodo->espacioId << RESET << ") - ";
+    
+    // Luego el subárbol derecho
+    recorridoInorden(nodo->derecho);
+}
+
+void ArbolRN::recorridoPostorden(NodoRN* nodo) const {
+    if (nodo == nulo) return;
+    
+    // Recorrer primero el subárbol izquierdo
+    recorridoPostorden(nodo->izquierdo);
+    
+    // Luego el subárbol derecho
+    recorridoPostorden(nodo->derecho);
+    
+    // Mostrar el nodo actual
+    cout << "(" << (nodo->color ? RED : WHITE) << nodo->espacioId << RESET << ") - ";
+}
+
+void ArbolRN::mostrarRecorridos() const {
+    cout << "\nRecorrido Preorden: ";
+    recorridoPreorden(raiz);
+    cout << "\n";
+    
+    cout << "\nRecorrido Inorden: ";
+    recorridoInorden(raiz);
+    cout << "\n";
+    
+    cout << "\nRecorrido Postorden: ";
+    recorridoPostorden(raiz);
+    cout << "\n";
+}
+
+NodoRN* ArbolRN::obtenerRaiz() {
+    return raiz;
+}
+
+//  Método para obtener la altura total del árbol
+int ArbolRN::obtenerAltura(NodoRN* nodo) const {
+    if (nodo == nullptr || nodo == nulo) {  // Los nodos nulos tienen altura 0
+        return 0;
+    }
+    return max(obtenerAltura(nodo->izquierdo), obtenerAltura(nodo->derecho)) + 1;
+}
+
+//  Método para calcular la altura negra del árbol (nodos negros en el camino más largo)
+int ArbolRN::obtenerAlturaNegra(NodoRN* nodo) const {
+    if (nodo == nullptr || nodo == nulo) {  // Los nodos nulos tienen altura negra 0
+        return 0;
+    }
+    int alturaIzq = obtenerAlturaNegra(nodo->izquierdo);
+    int alturaDer = obtenerAlturaNegra(nodo->derecho);
+
+    // Solo contamos los nodos negros en la altura negra
+    if (nodo->color == NEGRO) {
+        return max(alturaIzq, alturaDer) + 1;
+    } else {
+        return max(alturaIzq, alturaDer);
+    }
+}
+
+int ArbolRN::obtenerProfundidad(NodoRN* nodo) {
+    if (nodo == nullptr || nodo == raiz) {
+        return 0;  // La raíz tiene profundidad 0
+    }
+    return 1 + obtenerProfundidad(nodo->padre);  // Sumar 1 en cada nivel hacia arriba
+}
+
+NodoRN* ArbolRN::buscarNodoID(NodoRN* nodo, const string& espacioId) const {
+    // Si el nodo es nulo, no se encontró el espacioId
+    if (nodo == nullptr) {
+        return nullptr;
+    }
+
+    // Si el nodo actual contiene el espacioId, retorna el nodo
+    if (nodo->espacioId == espacioId) {
+        return nodo;
+    }
+
+    // Si el espacioId es menor que el del nodo actual, busca en el subárbol izquierdo
+    if (espacioId < nodo->espacioId) {
+        return buscarNodo(nodo->izquierdo, espacioId);
+    }
+
+    // Si el espacioId es mayor que el del nodo actual, busca en el subárbol derecho
+    return buscarNodo(nodo->derecho, espacioId);
 }

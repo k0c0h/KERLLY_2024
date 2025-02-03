@@ -12,6 +12,15 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
+#include <map>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+#include <ctime>
+#include "ArbolRN.h"
+#include "NodoRN.h"
+
 using namespace std;
 
 HistorialEstacionamiento::HistorialEstacionamiento() {
@@ -72,15 +81,26 @@ void HistorialEstacionamiento::registrarEntrada(const string& placa, const strin
          << ", Fecha/Hora: " << fechaHora << endl;
 }
 
-void HistorialEstacionamiento::registrarSalida(const string& placa) {
-    NodoRN* nodo = historial.buscar(placa);
-    if (nodo != nullptr && nodo->fechaHoraSalida.empty()) {
-        nodo->fechaHoraSalida = obtenerFechaHoraActual();
+bool HistorialEstacionamiento::registrarSalida(const string& placa) {
+    NodoRN* nodoEncontrado = nullptr;
+    vector<NodoRN*> registros = historial.obtenerInOrden();
+
+    // Buscar la entrada más reciente que aún no tiene salida
+    for (const auto& nodo : registros) {
+        if (nodo->placa == placa && nodo->fechaHoraSalida.empty()) {
+            nodoEncontrado = nodo;
+        }
+    }
+
+    if (nodoEncontrado != nullptr) {
+        nodoEncontrado->fechaHoraSalida = obtenerFechaHoraActual();
         guardarEnArchivo();
-        cout << "Salida registrada: Placa " << placa 
-             << ", Fecha/Hora Salida: " << nodo->fechaHoraSalida << endl;
+        cout << "\nSalida registrada para placa " << nodoEncontrado->placa 
+             << " a las " << nodoEncontrado->fechaHoraSalida << "." << endl;
+        return true;
     } else {
-        cout << "No se encontró una entrada activa para la placa " << placa << "." << endl;
+        cout << "No se encontro una entrada activa para la placa " << placa << "." << endl;
+        return false;
     }
 }
 
@@ -242,3 +262,238 @@ void HistorialEstacionamiento::mostrarAutosPorRangoFechas(const string& fechaIni
         cout << "No se encontraron registros entre las fechas " << fechaInicio << " y " << fechaFin << "." << endl;
     }
 }
+
+void HistorialEstacionamiento::buscarAutosEnEspacioPorRangoFechas(const string& espacioId, const string& fechaInicio, const string& fechaFin) const {
+    vector<NodoRN*> registros = historial.obtenerInOrden();
+    int izquierda = 0, derecha = registros.size() - 1, inicio = -1, fin = -1;
+    
+    // Búsqueda binaria para encontrar el primer nodo en el rango de fechas
+    while (izquierda <= derecha) {
+        int medio = izquierda + (derecha - izquierda) / 2;
+        string fechaIngreso = registros[medio]->fechaHoraIngreso.substr(0, 10);
+        
+        if (fechaIngreso >= fechaInicio) {
+            fin = medio;
+            derecha = medio - 1;
+        } else {
+            izquierda = medio + 1;
+        }
+    }
+    
+    izquierda = 0, derecha = registros.size() - 1;
+    
+    // Búsqueda binaria para encontrar el último nodo en el rango de fechas
+    while (izquierda <= derecha) {
+        int medio = izquierda + (derecha - izquierda) / 2;
+        string fechaIngreso = registros[medio]->fechaHoraIngreso.substr(0, 10);
+        
+        if (fechaIngreso <= fechaFin) {
+            inicio = medio;
+            izquierda = medio + 1;
+        } else {
+            derecha = medio - 1;
+        }
+    }
+    
+    if (fin == -1 || inicio == -1) {
+        cout << "No se encontraron autos en el rango de fechas." << endl;
+        return;
+    }
+    
+    cout << "Autos estacionados en el espacio " << espacioId << " entre " << fechaInicio << " y " << fechaFin << ":" << endl;
+    cout << "------------------------------------------------------" << endl;
+    bool encontrado = false;
+    
+    for (int i = fin; i <= inicio; ++i) {
+        if (registros[i]->espacioId == espacioId) {
+            encontrado = true;
+            cout << "Placa: " << registros[i]->placa
+                 << ", Ingreso: " << registros[i]->fechaHoraIngreso
+                 << ", Salida: " << (registros[i]->fechaHoraSalida.empty() ? "Aun en el parqueadero" : registros[i]->fechaHoraSalida)
+                 << endl;
+        }
+    }
+    
+    if (!encontrado) {
+        cout << "No se encontraron registros en el espacio " << espacioId << " para el rango de fechas." << endl;
+    }
+}
+
+// Función para calcular la duración en minutos de una estancia
+void HistorialEstacionamiento::mostrarAutosPorDuracionEnFecha(const string& fecha, const string& duracionMin, const string& duracionMax) const {
+    vector<NodoRN*> registros = historial.obtenerInOrden();
+    bool encontrado = false;
+
+    cout << "Autos estacionados el " << fecha << " con duracion entre " << duracionMin << " y " << duracionMax << ":\n";
+    cout << "------------------------------------------------------\n";
+
+    for (const auto& registro : registros) {
+        string fechaIngreso = registro->fechaHoraIngreso.substr(0, 10);
+        if (fechaIngreso == fecha && !registro->fechaHoraSalida.empty()) {
+            string duracion = calcularDuracion(registro->fechaHoraIngreso, registro->fechaHoraSalida);
+
+            if (estaEnRangoDuracion(duracion, duracionMin, duracionMax)) {
+                cout << "Placa: " << registro->placa
+                     << ", Espacio: " << registro->espacioId
+                     << ", Ingreso: " << registro->fechaHoraIngreso
+                     << ", Salida: " << registro->fechaHoraSalida
+                     << ", Duracion: " << duracion << "\n";
+                encontrado = true;
+            }
+        }
+    }
+
+    if (!encontrado) {
+        cout << "No se encontraron autos en la fecha " << fecha << " con la duracion especificada.\n";
+    }
+}
+
+string HistorialEstacionamiento::calcularDuracion(const string& ingreso, const string& salida) const {
+    std::tm tIngreso = {}, tSalida = {};
+    std::istringstream ssIngreso(ingreso), ssSalida(salida);
+
+    ssIngreso >> std::get_time(&tIngreso, "%Y-%m-%d %H:%M:%S");
+    ssSalida >> std::get_time(&tSalida, "%Y-%m-%d %H:%M:%S");
+
+    if (ssIngreso.fail() || ssSalida.fail()) {
+        return "Error";
+    }
+
+    std::time_t timeIngreso = std::mktime(&tIngreso);
+    std::time_t timeSalida = std::mktime(&tSalida);
+
+    if (timeIngreso == -1 || timeSalida == -1) {
+        return "Error";
+    }
+
+    int segundos = static_cast<int>(difftime(timeSalida, timeIngreso));
+    int horas = segundos / 3600;
+    int minutos = (segundos % 3600) / 60;
+
+    std::ostringstream duracion;
+    duracion << std::setw(2) << std::setfill('0') << horas << ":"
+             << std::setw(2) << std::setfill('0') << minutos;
+    
+    return duracion.str(); // Devuelve HH:MM
+}
+
+bool HistorialEstacionamiento::estaEnRangoDuracion(const string& duracion, const string& duracionMin, const string& duracionMax) const {
+    return duracion >= duracionMin && duracion <= duracionMax;
+}
+
+int convertirDuracionAMinutos(const string& duracion) {
+    int horas, minutos;
+    char separador;
+
+    istringstream ss(duracion);
+    ss >> horas >> separador >> minutos;
+
+    if (ss.fail() || separador != ':') {
+        return 0; // Si hay error, devolvemos 0 minutos
+    }
+
+    return (horas * 60) + minutos; // Convertimos a minutos
+}
+
+void HistorialEstacionamiento::mostrarEspacioMasMenosOcupado() const {
+    map<string, int> conteoEspacios;  // EspacioId -> cantidad de veces ocupado
+
+    vector<NodoRN*> registros = historial.obtenerInOrden();
+
+    // Contar cuántas veces se usó cada espacio
+    for (const auto& registro : registros) {
+        conteoEspacios[registro->espacioId]++;
+    }
+
+    if (conteoEspacios.empty()) {
+        cout << "No hay registros de estacionamiento." << endl;
+        return;
+    }
+
+    // Convertir a vector y ordenar
+    vector<pair<string, int>> listaEspacios(conteoEspacios.begin(), conteoEspacios.end());
+    sort(listaEspacios.begin(), listaEspacios.end(),
+         [](const pair<string, int>& a, const pair<string, int>& b) {
+             return a.second < b.second; // Orden ascendente
+         });
+
+    // Espacio menos y más ocupado
+    cout << "Espacio de Estacionamiento Mas y Menos Utilizado" << endl;
+    cout << "-----------------------------------------------------" << endl;
+    cout << "Espacio mas ocupado:    [ID: " << listaEspacios.back().first
+         << "] -> " << listaEspacios.back().second << " veces" << endl;
+    cout << "Espacio menos ocupado:  [ID: " << listaEspacios.front().first
+         << "] -> " << listaEspacios.front().second << " veces" << endl;
+}
+
+void HistorialEstacionamiento::mostrarEspacioMasMenosTiempoOcupado() const {
+    map<string, int> duracionEspacios;  // EspacioId -> tiempo total en minutos
+
+    vector<NodoRN*> registros = historial.obtenerInOrden();
+
+    // Calcular tiempo total de ocupación por espacio
+    for (const auto& registro : registros) {
+        if (!registro->fechaHoraSalida.empty()) { // Solo contar si tiene salida
+            string duracion = calcularDuracion(registro->fechaHoraIngreso, registro->fechaHoraSalida);
+            duracionEspacios[registro->espacioId] += convertirDuracionAMinutos(duracion);
+        }
+    }
+
+    if (duracionEspacios.empty()) {
+        cout << "No hay registros con tiempos de salida." << endl;
+        return;
+    }
+
+    // Convertir a vector y ordenar
+    vector<pair<string, int>> listaDuracion(duracionEspacios.begin(), duracionEspacios.end());
+    sort(listaDuracion.begin(), listaDuracion.end(),
+         [](const pair<string, int>& a, const pair<string, int>& b) {
+             return a.second < b.second; // Orden ascendente
+         });
+
+    // Convertir minutos a formato HH:MM
+    auto formatearTiempo = [](int minutos) {
+        int horas = minutos / 60;
+        int min = minutos % 60;
+        ostringstream oss;
+        oss << horas << " horas y " << min << " minutos";
+        return oss.str();
+    };
+
+    // Espacio con mayor y menor tiempo de uso
+    cout << " Espacios con Mayor y Menor Duracion de Uso " << endl;
+    cout << "-------------------------------------------------" << endl;
+    cout << " Espacio con mayor tiempo de uso:    [ID: " << listaDuracion.back().first
+         << "]  ->  " << formatearTiempo(listaDuracion.back().second) << endl;
+    cout << " Espacio con menor tiempo de uso:    [ID: " << listaDuracion.front().first
+         << "]  ->  " << formatearTiempo(listaDuracion.front().second) << endl;
+}
+
+void HistorialEstacionamiento::imprimirArbol() {
+    historial.imprimirArbolVertical();  // Si es puntero: arbol->imprimirArbol();
+}
+
+void HistorialEstacionamiento::mostrarRecorridos() const {
+    historial.mostrarRecorridos();
+}
+
+int HistorialEstacionamiento::obtenerAltura(NodoRN* nodo) const{
+    return historial.obtenerAltura(nodo);
+}
+
+int HistorialEstacionamiento::obtenerAlturaNegra(NodoRN* nodo) const{
+    return historial.obtenerAlturaNegra(nodo);
+}
+
+NodoRN* HistorialEstacionamiento::obtenerRaiz(){
+    return historial.obtenerRaiz();
+}
+
+int HistorialEstacionamiento::obtenerProfundidad(NodoRN* nodo){
+    return historial.obtenerProfundidad(nodo);
+}
+
+NodoRN* HistorialEstacionamiento::buscarNodoID(NodoRN* nodo, const string& espacioId) const{
+    return historial.buscarNodoID(nodo, espacioId);
+}
+

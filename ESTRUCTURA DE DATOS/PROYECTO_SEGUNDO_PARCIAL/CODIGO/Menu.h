@@ -19,6 +19,7 @@
 #include <iostream>
 #include <conio.h>
 #include <list>
+#include <map>
 
 class Menu {
 private:
@@ -29,7 +30,7 @@ private:
     vector<string> opciones;
     int seleccionActual;
 
-    void mostrarSubmenuAutosPermitidos();
+    void submenuBusquedas();
     void mostrarSubmenuHistorial();
     void ordenarAutosPermitidos();
     void mostrarMenuOrdenamiento(std::list<Registro>& registros);  // Modificado

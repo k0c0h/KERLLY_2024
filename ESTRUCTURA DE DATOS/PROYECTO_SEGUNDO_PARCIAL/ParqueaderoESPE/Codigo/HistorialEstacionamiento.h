@@ -18,6 +18,10 @@
 #include <sstream>
 #include <iostream>
 #include <ctime>
+#include <iomanip>
+#include "NodoRN.h"
+#include <map>
+
 using namespace std;
 
 class HistorialEstacionamiento {
@@ -33,15 +37,27 @@ public:
     HistorialEstacionamiento();             // Constructor
 
     void registrarEntrada(const string& placa, const string& espacioId);
-    void registrarSalida(const string& placa);
+    bool registrarSalida(const string& placa);
     void mostrarHistorial() const;
     string buscarHistorial(const string& placa) const;
+    NodoRN* buscarNodoID(NodoRN* nodo, const string& espacioId) const;
     void mostrarHistorialPorFecha(const string& fecha) const;
     void mostrarHistorialPorFechaYPlaca(const string& fecha, const string& placa) const;
     void mostrarHistorialPorRangoHoras(const string& horaInicio, const string& horaFin) const;
     void mostrarPrimerIngresoPorFecha(const string& fecha) const;
     void mostrarAutosPorRangoFechas(const string& fechaInicio, const string& fechaFin) const;
-
+    void buscarAutosEnEspacioPorRangoFechas(const string& espacioId, const string& fechaInicio, const string& fechaFin) const ;
+    void mostrarAutosPorDuracionEnFecha(const string& fecha, const string& duracionMin, const string& duracionMax) const;
+    string calcularDuracion(const string& ingreso, const string& salida) const;
+    bool estaEnRangoDuracion(const string& duracion, const string& duracionMin, const string& duracionMax) const;
+    void mostrarEspacioMasMenosTiempoOcupado() const ;
+    void mostrarEspacioMasMenosOcupado() const;
+    void imprimirArbol();
+    void mostrarRecorridos() const;
+    int obtenerAltura(NodoRN* nodo) const;
+    int obtenerAlturaNegra(NodoRN* nodo) const;
+    NodoRN* obtenerRaiz();
+    int obtenerProfundidad(NodoRN* nodo);
 };
 
 #endif

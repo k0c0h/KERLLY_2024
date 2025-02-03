@@ -22,11 +22,13 @@
 #include <fstream>
 #include "BusquedaBinaria.h"
 #include "Backup.h"
+#include "ArbolRN.h"
 
 using namespace std;
 // Constructor: Inicializa el menú con las opciones disponibles
-Menu::Menu(Parqueadero* p, HistorialEstacionamiento* h, AutosPermitidos* a)
-    : parqueadero(p), historial(h), autosPermitidos(a), seleccionActual(0) {
+Menu::Menu(Parqueadero *p, HistorialEstacionamiento *h, AutosPermitidos *a)
+    : parqueadero(p), historial(h), autosPermitidos(a), seleccionActual(0)
+{
     opciones = {
         "Mostrar estado del parqueadero",
         "Estacionar un auto",
@@ -34,165 +36,250 @@ Menu::Menu(Parqueadero* p, HistorialEstacionamiento* h, AutosPermitidos* a)
         "Registrar auto permitido",
         "Eliminar auto permitido",
         "Mostrar autos permitidos",
+        "Imprimir arbol",
+        "Mostrar Recorridos",
+        "Mostrar altura del arbol y altura de nodos negros",
+        "Mostrar Profundidad",
         "Opciones de Busqueda",
         "Ordenar autos permitidos",
         "Mostrar propietarios",
         "Mostrar historial de estacionamientos",
         "Opciones de Backup",
-        "Salir"
-    };
+        "Salir"};
 }
 
 // Mostrar el menú principal
-void Menu::mostrarMenu() {
+void Menu::mostrarMenu()
+{
     system("cls");
     cout << "Sistema de Gestion de Parqueadero\n";
     cout << "--------------------------------\n";
 
-    for (int i = 0; i < opciones.size(); i++) {
-        if (i == seleccionActual) {
+    for (int i = 0; i < opciones.size(); i++)
+    {
+        if (i == seleccionActual)
+        {
             cout << " > " << opciones[i] << " <\n"; // Opción seleccionada
-        } else {
+        }
+        else
+        {
             cout << "   " << opciones[i] << "\n"; // Opción no seleccionada
         }
     }
-    cout << "\nPresiona F1 para ver la guia rapida.";
 }
 
 // Ejecutar la opción seleccionada
-void Menu::ejecutarOpcion() {          
+void Menu::ejecutarOpcion()
+{
     system("cls");
-    switch (seleccionActual) {
-        case 0:
-            parqueadero->mostrarEstado();
-            break;
-        case 1: {
-            string placa, espacioId;
-            Validaciones<string> validador;
-            Validaciones<int> ingresar_Entero;
-            placa = validador.ingresarPlaca("Ingresa la placa del auto a estacionar(sin guiones): ");
-            cout <<endl;
-            if (!autosPermitidos->buscarAuto(placa)) {
-                cout << "El auto no esta permitido. Registrelo primero.\n";
-                break;
-            }
-            parqueadero->mostrarEstado();
-            espacioId = validador.ingresarEspacioId("Ingrese el id del espacio a estacionarse: ");
-            cout<<endl;
-            if (parqueadero->estacionarAuto(placa, espacioId)) {
-                historial->registrarEntrada(placa, espacioId);
-            }
+    switch (seleccionActual)
+    {
+    case 0:
+        parqueadero->mostrarEstado();
+        break;
+    case 1:
+    {
+        string placa, espacioId;
+        Validaciones<string> validador;
+
+        // Ingresar y validar la placa
+        placa = validador.ingresarPlaca("Ingresa la placa del auto a estacionar (sin guiones): ");
+        cout << endl;
+
+        // Verificar si el auto está permitido
+        if (!autosPermitidos->buscarAuto(placa))
+        {
+            cout << "El auto no esta permitido. Registrelo primero.\n";
             break;
         }
-        case 2: {
-            string placa;
-            Validaciones<string> validador;
-            placa = validador.ingresarPlaca("Ingrese la placa del auto a retirar(sin guiones): ");
-            if (parqueadero->retirarAuto(placa)) {
-                historial->registrarSalida(placa);
-            }
-            break;
+
+        // Mostrar estado actual del parqueadero
+        parqueadero->mostrarEstado();
+
+        // Estacionamiento automático
+        espacioId = ""; // Forzar asignación aleatoria
+
+        // Intentar estacionar el auto
+        if (parqueadero->estacionarAuto(placa, espacioId))
+        {
+            historial->registrarEntrada(placa, espacioId); // Registrar la entrada con el espacio asignado
         }
-        case 3: {
-            string placa, marca, color, nombre, cedula, correo;
-            Validaciones<string> validador;
-            placa = validador.ingresarPlaca("Ingrese la placa del auto(sin guiones): ");
-            cout <<endl;
-            marca = validador.ingresar("Ingrese la marca del auto: ", "string");
-            cout<<endl;
-            color = validador.ingresar("Ingrese el color: ","string");
-            cout<<endl;
-            nombre = validador.ingresar("Ingrese el nombre del propietario: ","string");
-            cout<<endl;
-            cedula = validador.ingresarCedula("Ingrese la cedula del propietario: ");
-            cout<<endl;
-            correo = validador.ingresarCorreo("Ingrese el correo del propietario: ");
-            cout<<endl;
-            Auto autoObj(placa, marca, color);
-            Propietario propietario(nombre, cedula, correo);
-            autosPermitidos->agregarAuto(autoObj, propietario);
-            break;
+        break;
+    }
+    case 2:
+    { // Retirar auto
+        string placa;
+        Validaciones<string> validador;
+
+        placa = validador.ingresarPlaca("Ingrese la placa del auto a retirar (sin guiones): ");
+
+        // `retirarAuto` ya registra la salida en el historial
+        parqueadero->retirarAuto(placa);
+
+        break;
+    }
+    case 3:
+    {
+        string placa, marca, color, nombre, cedula, correo;
+        Validaciones<string> validador;
+        placa = validador.ingresarPlaca("Ingrese la placa del auto(sin guiones): ");
+        cout << endl;
+        marca = validador.ingresar("Ingrese la marca del auto: ", "string");
+        cout << endl;
+        color = validador.ingresar("Ingrese el color: ", "string");
+        cout << endl;
+        nombre = validador.ingresar("Ingrese el nombre del propietario: ", "string");
+        cout << endl;
+        cedula = validador.ingresarCedula("Ingrese la cedula del propietario: ");
+        cout << endl;
+        correo = validador.ingresarCorreo("Ingrese el correo del propietario: ");
+        cout << endl;
+        Auto autoObj(placa, marca, color);
+        Propietario propietario(nombre, cedula, correo);
+        autosPermitidos->agregarAuto(autoObj, propietario);
+        break;
+    }
+    case 4:
+    {
+        string placa;
+        Validaciones<string> validador;
+        placa = validador.ingresarPlaca("Ingrese la placa del auto a eliminar(sin guiones): ");
+        cout << endl;
+        autosPermitidos->eliminarAuto(placa);
+        if (parqueadero->retirarAuto(placa))
+        {
+            historial->registrarSalida(placa);
         }
-        case 4: {
-            string placa;
-            Validaciones<string> validador;
-            placa = validador.ingresarPlaca("Ingrese la placa del auto a eliminar(sin guiones): ");
-            cout<<endl;
-            autosPermitidos->eliminarAuto(placa);
-            if (parqueadero->retirarAuto(placa)){
-                historial->registrarSalida(placa);
-            }
-            break;
+        break;
+    }
+    case 5:
+        autosPermitidos->mostrarAutos();
+        break;
+    case 6:
+    {
+        historial->imprimirArbol();
+        break;
+    }
+    case 7:
+    {
+        historial->mostrarRecorridos();
+        break;
+    }
+    case 8:
+    {
+        NodoRN *raiz = historial->obtenerRaiz(); //
+        int alturaTotal = historial->obtenerAltura(raiz);
+        int alturaNegra = historial->obtenerAlturaNegra(raiz);
+
+        cout << "Altura total del arbol: " << alturaTotal << endl;
+        cout << "Altura de nodos negros del arbol: " << alturaNegra << endl;
+        break;
+    }
+    case 9:
+    {
+        string espacioId;
+        Validaciones<string> validador;
+        espacioId = validador.ingresarEspacioId("Ingrese el ID del espacio de estacionamiento: ");
+        cout <<endl;
+
+        NodoRN *raiz = historial->obtenerRaiz();
+        NodoRN *nodo = historial->buscarNodoID(raiz,espacioId); // Buscar nodo por espacioId
+        if (nodo)
+        {
+            int profundidad = historial->obtenerProfundidad(nodo);
+            cout << "La profundidad del nodo con ID de estacionamiento " << espacioId << " es: " << profundidad << endl;
         }
-        case 5:
-            autosPermitidos->mostrarAutos();
-            break;
-        case 6:
-            submenuBusquedas();
-            break;
-        case 7: // Agregar caso para ordenar los autos permitidos
-            mostrarMenuOrdenamiento(autosPermitidos->getRegistros());
-            break;
-        case 8:
-            autosPermitidos->mostrarPropietarios();
-            break;
-        case 9:
-            mostrarSubmenuHistorial();
-            break;
-        case 10:
-            Backup backup;
-            mostrarSubmenuBackup(backup);
-            break;
-        case 11:
-            cout << "Saliendo del programa...\n";
-            exit(0);
-        default:
-            cout << "Opcion no valida.\n";
-            break;
+        else
+        {
+            cout << "Espacio de estacionamiento no encontrado." << endl;
+        }
+        break;
+    }
+    case 10:
+        submenuBusquedas();
+        break;
+    case 11: // Agregar caso para ordenar los autos permitidos
+        mostrarMenuOrdenamiento(autosPermitidos->getRegistros());
+        break;
+    case 12:
+        autosPermitidos->mostrarPropietarios();
+        break;
+    case 13:
+        mostrarSubmenuHistorial();
+        break;
+    case 14:
+        Backup backup;
+        mostrarSubmenuBackup(backup);
+        break;
+    case 15:
+        cout << "Saliendo del programa...\n";
+        exit(0);
+    default:
+        cout << "Opcion no valida.\n";
+        break;
     }
     system("pause");
 }
 
-void Menu::mostrarSubmenuBackup(Backup& backup) {
+void Menu::mostrarSubmenuBackup(Backup &backup)
+{
     vector<string> opcionesBackup = {
         "Realizar Backup de todos los archivos",
         "Realizar Backup de un archivo especifico",
         "Eliminar un archivo",
         "Recuperar un Backup",
-        "Regresar al menu principal"
-    };
+        "Regresar al menu principal"};
 
     int seleccionSubmenu = 0;
 
-    while (true) {
+    while (true)
+    {
         system("cls");
         cout << "\nOpciones de Backup\n";
         cout << "-----------------------\n";
-        
-        for (int i = 0; i < opcionesBackup.size(); i++) {
-            if (i == seleccionSubmenu) {
+
+        for (int i = 0; i < opcionesBackup.size(); i++)
+        {
+            if (i == seleccionSubmenu)
+            {
                 cout << " > " << opcionesBackup[i] << " <\n";
-            } else {
+            }
+            else
+            {
                 cout << "   " << opcionesBackup[i] << "\n";
             }
         }
 
         char tecla = _getch();
-        if (tecla == 72) { // Flecha arriba
+        if (tecla == 72)
+        { // Flecha arriba
             seleccionSubmenu = (seleccionSubmenu - 1 + opcionesBackup.size()) % opcionesBackup.size();
-        } else if (tecla == 80) { // Flecha abajo
+        }
+        else if (tecla == 80)
+        { // Flecha abajo
             seleccionSubmenu = (seleccionSubmenu + 1) % opcionesBackup.size();
-        } else if (tecla == '\r') { // Enter
+        }
+        else if (tecla == '\r')
+        { // Enter
             system("cls");
-            if (seleccionSubmenu == 0) {
+            if (seleccionSubmenu == 0)
+            {
                 backup.realizarBackupTodos();
-            } else if (seleccionSubmenu == 1) {
+            }
+            else if (seleccionSubmenu == 1)
+            {
                 backup.realizarBackupEspecifico();
-            } else if (seleccionSubmenu == 2) {
+            }
+            else if (seleccionSubmenu == 2)
+            {
                 backup.eliminarArchivo();
-            } else if (seleccionSubmenu == 3) {
+            }
+            else if (seleccionSubmenu == 3)
+            {
                 backup.recuperarBackup();
-            } else if (seleccionSubmenu == 4) {
+            }
+            else if (seleccionSubmenu == 4)
+            {
                 break; // Regresar al menú principal
             }
             system("pause");
@@ -207,7 +294,11 @@ void Menu::submenuBusquedas()
         "Buscar auto por placa",
         "Buscar autos permitidos por prefijo de placa",  // Opción nueva
         "Buscar el primer ingreso por fecha especifica", // Opción nueva
-        "Buscar autos por rango de fechas",  // Opción nueva
+        "Buscar autos por rango de fechas",              // Opción nueva
+        "Buscar autos en un espacio por rango de fechas",
+        "Buscar autos por duración de estacionamiento en una fecha",
+        "Buscar espacio mas y menos ocupado por numero de veces",
+        "Buscar espacio mas y menos ocupado por duracion",
         "Regresar al menu principal"};
 
     int seleccionSubmenu = 0;
@@ -256,7 +347,7 @@ void Menu::submenuBusquedas()
                 }
                 else
                 {
-                    cout << "El auto con placa " << placa << " no está permitido.\n";
+                    cout << "El auto con placa " << placa << " no esta permitido.\n";
                 }
             }
             else if (seleccionSubmenu == 1)
@@ -265,7 +356,7 @@ void Menu::submenuBusquedas()
                 string prefijo;
                 Validaciones<string> validador;
                 prefijo = validador.ingresarPrefijo("Ingrese el prefijo de la placa(Ejem: XYZ): ");
-                cout<<endl;
+                cout << endl;
                 // Usar la clase BusquedaBinaria para encontrar los autos con el prefijo
                 BusquedaBinaria::mostrarRegistros(autosPermitidos->getRegistros(), prefijo);
             }
@@ -286,7 +377,7 @@ void Menu::submenuBusquedas()
                 string fechaInicio, fechaFin;
                 Validaciones<string> validador;
                 fechaInicio = validador.ingresarFecha("Ingrese la fecha de inicio (YYYY-MM-DD): ");
-                cout <<endl;
+                cout << endl;
                 fechaFin = validador.ingresarFecha("Ingrese la fecha de fin (YYYY-MM-DD): ");
                 cout << endl;
 
@@ -294,6 +385,40 @@ void Menu::submenuBusquedas()
                 historial->mostrarAutosPorRangoFechas(fechaInicio, fechaFin);
             }
             else if (seleccionSubmenu == 4)
+            {
+                string espacioId, fechaInicio, fechaFin;
+                Validaciones<string> validador;
+                espacioId = validador.ingresarEspacioId("Ingrese el ID del espacio: ");
+                cout << endl;
+                fechaInicio = validador.ingresarFecha("Ingrese la fecha de inicio (YYYY-MM-DD): ");
+                cout << endl;
+                fechaFin = validador.ingresarFecha("Ingrese la fecha de fin (YYYY-MM-DD): ");
+                cout << endl;
+                historial->buscarAutosEnEspacioPorRangoFechas(espacioId, fechaInicio, fechaFin);
+            }
+            else if (seleccionSubmenu == 5)
+            { // Buscar por duración
+                string fecha, duracionMin, duracionMax;
+                Validaciones<string> validador;
+                fecha = validador.ingresarFecha("Ingrese la fecha de busqueda (YYYY-MM-DD): ");
+                cout << endl;
+                duracionMin = validador.ingresarDuracion("Ingrese la duracion minima (HH:MM): ");
+                cout << endl;
+                duracionMax = validador.ingresarDuracion("Ingrese la duracion maxima en (HH:MM): ");
+                cout << endl;
+                historial->mostrarAutosPorDuracionEnFecha(fecha, duracionMin, duracionMax);
+            }
+            else if (seleccionSubmenu == 6)
+            {
+                // Opción: Buscar espacio mas y menos ocupado por numero de veces
+                historial->mostrarEspacioMasMenosOcupado();
+            }
+            else if (seleccionSubmenu == 7)
+            {
+                // Opción: Buscar espacio mas y menos ocupado por duracion
+                historial->mostrarEspacioMasMenosTiempoOcupado();
+            }
+            else if (seleccionSubmenu == 8)
             {
                 // Opción: Regresar al menú principal
                 break;
@@ -305,43 +430,56 @@ void Menu::submenuBusquedas()
 }
 
 // Mostrar submenú del historial
-void Menu::mostrarSubmenuHistorial() {
+void Menu::mostrarSubmenuHistorial()
+{
     vector<string> opcionesHistorial = {
         "Mostrar historial por fecha",
         "Mostrar historial por fecha y placa",
         "Mostrar historial por rango de hora",
-        "Regresar al menu principal"
-    };
+        "Regresar al menu principal"};
     int seleccionSubmenu = 0;
 
-    while (true) {
+    while (true)
+    {
         system("cls");
         cout << "Opciones de Historial\n";
         cout << "-----------------------\n";
 
-        for (int i = 0; i < opcionesHistorial.size(); i++) {
-            if (i == seleccionSubmenu) {
+        for (int i = 0; i < opcionesHistorial.size(); i++)
+        {
+            if (i == seleccionSubmenu)
+            {
                 cout << " > " << opcionesHistorial[i] << " <\n";
-            } else {
+            }
+            else
+            {
                 cout << "   " << opcionesHistorial[i] << "\n";
             }
         }
 
         char tecla = _getch();
-        if (tecla == 72) { // Flecha arriba
+        if (tecla == 72)
+        { // Flecha arriba
             seleccionSubmenu = (seleccionSubmenu - 1 + opcionesHistorial.size()) % opcionesHistorial.size();
-        } else if (tecla == 80) { // Flecha abajo
+        }
+        else if (tecla == 80)
+        { // Flecha abajo
             seleccionSubmenu = (seleccionSubmenu + 1) % opcionesHistorial.size();
-        } else if (tecla == '\r') { // Enter
+        }
+        else if (tecla == '\r')
+        { // Enter
             system("cls");
-            if (seleccionSubmenu == 0) {
+            if (seleccionSubmenu == 0)
+            {
                 string fecha;
                 Validaciones<string> validador;
                 fecha = validador.ingresarFecha("Ingrese la fecha (YYYY-MM-DD): ");
                 cout << endl;
                 historial->mostrarHistorialPorFecha(fecha);
                 cout << endl;
-            } else if (seleccionSubmenu == 1) {
+            }
+            else if (seleccionSubmenu == 1)
+            {
                 string fecha, placa;
                 Validaciones<string> validador;
                 fecha = validador.ingresarFecha("Ingrese la fecha (YYYY-MM-DD): ");
@@ -349,7 +487,9 @@ void Menu::mostrarSubmenuHistorial() {
                 placa = validador.ingresarPlaca("Ingrese la placa (sin guiones): ");
                 cout << endl;
                 historial->mostrarHistorialPorFechaYPlaca(fecha, placa);
-            } else if (seleccionSubmenu == 2) {
+            }
+            else if (seleccionSubmenu == 2)
+            {
                 string horaInicio, horaFin;
                 Validaciones<string> validador;
                 horaInicio = validador.ingresarHora("Ingrese la hora de inicio (HH:MM:SS): ");
@@ -358,7 +498,9 @@ void Menu::mostrarSubmenuHistorial() {
                 cout << endl;
                 historial->mostrarHistorialPorRangoHoras(horaInicio, horaFin);
                 cout << endl;
-            } else if (seleccionSubmenu == 3) {
+            }
+            else if (seleccionSubmenu == 3)
+            {
                 break; // Regresar al menú principal
             }
             system("pause");
@@ -463,23 +605,33 @@ void Menu::mostrarMenuOrdenamiento(std::list<Registro> &registros) // Modificado
 }
 
 // Iniciar el menú interactivo
-void Menu::iniciar() {
-    while (true) {
+void Menu::iniciar()
+{
+    while (true)
+    {
         mostrarMenu();
         char tecla = _getch();
-        if (tecla == 72) { // Flecha arriba
+        if (tecla == 72)
+        { // Flecha arriba
             seleccionActual = (seleccionActual - 1 + opciones.size()) % opciones.size();
-        } else if (tecla == 80) { // Flecha abajo
+        }
+        else if (tecla == 80)
+        { // Flecha abajo
             seleccionActual = (seleccionActual + 1) % opciones.size();
-        } else if (tecla == '\r') { // Enter
+        }
+        else if (tecla == '\r')
+        { // Enter
             ejecutarOpcion();
-        } else if (tecla == 59) { // F1 (en ASCII extendido)
+        }
+        else if (tecla == 59)
+        { // F1 (en ASCII extendido)
             mostrarGuiaRapida();
         }
     }
 }
 
-void Menu::mostrarGuiaRapida() {
+void Menu::mostrarGuiaRapida()
+{
     vector<string> paginas = {
         "Guia Rapida - Pagina 1\n"
         "----------------------------\n"
@@ -509,31 +661,36 @@ void Menu::mostrarGuiaRapida() {
         "  - Mostrar historiales de acuerdo a varios atributos.\n\n"
         "- Navegacion del Menu\n"
         "  - Usa las flechas para moverte por todas las opciones.\n\n"
-        "Usa las flechas para regresar, ESC para salir.\n"
-    };
+        "Usa las flechas para regresar, ESC para salir.\n"};
 
     int paginaActual = 0;
 
-    while (true) {
+    while (true)
+    {
         system("cls");
         cout << paginas[paginaActual];
 
         char tecla = _getch();
-        if (tecla == 27) { // Tecla ESC para salir
+        if (tecla == 27)
+        { // Tecla ESC para salir
             break;
-        } else if (tecla == 75 && paginaActual > 0) { // Flecha izquierda (código ASCII 75)
+        }
+        else if (tecla == 75 && paginaActual > 0)
+        { // Flecha izquierda (cÃ³digo ASCII 75)
             paginaActual--;
-        } else if (tecla == 77 && paginaActual < paginas.size() - 1) { // Flecha derecha (código ASCII 77)
+        }
+        else if (tecla == 77 && paginaActual < paginas.size() - 1)
+        { // Flecha derecha (cÃ³digo ASCII 77)
             paginaActual++;
         }
     }
 
-    system("cls"); // Limpiar pantalla antes de regresar al menú principal
+    system("cls"); // Limpiar pantalla antes de regresar al menÃº principal
 }
 
-void Menu::ordenarAutosPermitidos() {
+void Menu::ordenarAutosPermitidos()
+{
     // Llamamos al método de ordenar de la clase AutosPermitidos
-    autosPermitidos->ordenarAutos();  // Suponiendo que 'ordenarAutos' está implementado en AutosPermitidos
+    autosPermitidos->ordenarAutos(); // Suponiendo que 'ordenarAutos' está implementado en AutosPermitidos
     cout << "Autos permitidos ordenados correctamente." << endl;
 }
-
