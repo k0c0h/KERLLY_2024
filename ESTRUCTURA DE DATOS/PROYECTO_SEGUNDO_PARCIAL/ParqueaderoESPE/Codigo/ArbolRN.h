@@ -47,6 +47,8 @@ public:
     NodoRN* obtenerRaiz();
     int obtenerAlturaNegra(NodoRN* nodo) const;
     int obtenerProfundidad(NodoRN* nodo);
+    void mostrarArbol(NodoRN *nodo, int espacio) const;
+    void mostrarArbol() const;
 
     // Destructor
     ~ArbolRN();

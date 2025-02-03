@@ -469,8 +469,8 @@ void HistorialEstacionamiento::mostrarEspacioMasMenosTiempoOcupado() const {
          << "]  ->  " << formatearTiempo(listaDuracion.front().second) << endl;
 }
 
-void HistorialEstacionamiento::imprimirArbol() {
-    historial.imprimirArbolVertical();  // Si es puntero: arbol->imprimirArbol();
+void HistorialEstacionamiento::mostrarArbol() {
+    historial.mostrarArbol();  // Si es puntero: arbol->imprimirArbol();
 }
 
 void HistorialEstacionamiento::mostrarRecorridos() const {
