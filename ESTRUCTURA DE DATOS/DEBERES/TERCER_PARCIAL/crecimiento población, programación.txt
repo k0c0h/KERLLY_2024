@@ -1,0 +1,15 @@
+crecimiento población, programación dinámica, 
+grafico en c++ grafico en Matlab
+bien hecha la propuesta para el viernes
+tema que yo quiera
+individual
+backtracking
+análisis, datos a Matlab o powerba dash board
+fuerza bruta - romper claves 
+que abarque el primero,segundo y tercer parcial
+ultima semana de marzo para el 05 de marzo
+examen el 07 marzo
+backtracking para el viernes 
+aritmética de notación O 
+lunes búsqueda exhaustiva, algoritmos voraces, programación dinámica
+viernes backtracking

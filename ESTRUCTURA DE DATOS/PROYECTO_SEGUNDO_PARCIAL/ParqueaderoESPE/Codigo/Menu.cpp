@@ -39,7 +39,7 @@ Menu::Menu(Parqueadero *p, HistorialEstacionamiento *h, AutosPermitidos *a)
         "Imprimir arbol",
         "Mostrar Recorridos",
         "Mostrar altura del arbol y altura de nodos negros",
-        "Mostrar Profundidad",
+        //"Mostrar Profundidad",
         "Opciones de Busqueda",
         "Ordenar autos permitidos",
         "Mostrar propietarios",
@@ -157,7 +157,7 @@ void Menu::ejecutarOpcion()
         break;
     case 6:
     {
-        historial->mostrarArbol();
+        historial->imprimirArbolGrafico();
         break;
     }
     case 7:
@@ -175,7 +175,7 @@ void Menu::ejecutarOpcion()
         cout << "Altura de nodos negros del arbol: " << alturaNegra << endl;
         break;
     }
-    case 9:
+    /*case 9:
     {
         string espacioId;
         Validaciones<string> validador;
@@ -194,24 +194,24 @@ void Menu::ejecutarOpcion()
             cout << "Espacio de estacionamiento no encontrado." << endl;
         }
         break;
-    }
-    case 10:
+    }*/
+    case 9:
         submenuBusquedas();
         break;
-    case 11: // Agregar caso para ordenar los autos permitidos
+    case 10: // Agregar caso para ordenar los autos permitidos
         mostrarMenuOrdenamiento(autosPermitidos->getRegistros());
         break;
-    case 12:
+    case 11:
         autosPermitidos->mostrarPropietarios();
         break;
-    case 13:
+    case 12:
         mostrarSubmenuHistorial();
         break;
-    case 14:
+    case 13:
         Backup backup;
         mostrarSubmenuBackup(backup);
         break;
-    case 15:
+    case 14:
         cout << "Saliendo del programa...\n";
         exit(0);
     default:
